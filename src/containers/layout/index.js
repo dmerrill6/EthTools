@@ -4,6 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import getTheme from './theme';
 import AppBarContent from '../../components/app-bar-content';
+import MetamaskHandler from '../../components/metamask';
 
 const Layout = (props) => (
   <MuiThemeProvider muiTheme={getTheme()}>
@@ -11,6 +12,7 @@ const Layout = (props) => (
       <AppBar
         title={<AppBarContent/>}
       />
+      <MetamaskHandler/>
       {props.children}
     </div>
   </MuiThemeProvider>

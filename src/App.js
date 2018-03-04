@@ -11,6 +11,8 @@ import ContractUI from './containers/contract-ui';
 import About from './containers/about';
 import Layout from './containers/layout';
 
+
+
 const App = ({ store }) => (
   <div>
     <Provider store={store}>
