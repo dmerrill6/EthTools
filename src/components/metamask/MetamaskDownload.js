@@ -1,32 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import Notice from '../visual/Notice';
 
 
-class MetamaskDownload extends React.Component {
-  constructor () {
-    super();
-    this.state = {
-      hasWeb3: true
-    };
-  }
+const MetamaskDownload = (props) => (
+  <Notice type='danger' active>
+    <p>
+      You must download MetaMask to be able to connect to Web3 and the Ethereum Blockchain. <a target='_blank' rel="noopener" href='https://metamask.io'>Click here to download MetaMask.</a>
+    </p>
 
-  componentDidMount () {
-    if (!window.web3js) {
-      this.setState({hasWeb3: false});
-    }
-  }
-
-  render () {
-    return !this.state.hasWeb3 && (
-      <div>
-        Download Metamask
-      </div>
-    );
-  }
-}
-
-MetamaskDownload.propTypes = {
-//   children: PropTypes.node
-};
+  </Notice>
+)
 
 export default MetamaskDownload;

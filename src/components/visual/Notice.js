@@ -6,26 +6,26 @@ import colors from '../../utils/variables/colors';
 const backgroundColor = (type) => {
   switch(type){
     case 'danger':
-      return colors['dangerColor'];
+      return colors.dangerColor;
     case 'success':
-      return colors['successColor'];
+      return colors.successColor;
     case 'warning':
-      return colors['warningColor'];
+      return colors.warningColor;
     default:
-      return colors['successColor'];
+      return colors.successColor;
   }
 }
 
 const textColor = (type) => {
   switch (type) {
     case 'danger':
-      return colors['whiteColor'];
+      return colors.whiteColor;
     case 'success':
-      return colors['whiteColor'];
+      return colors.whiteColor;
     case 'warning':
-      return colors['blackColor'];
+      return colors.blackColor;
     default:
-      return colors['whiteColor'];
+      return colors.whiteColor;
   }
 }
 

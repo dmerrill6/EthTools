@@ -8,8 +8,8 @@ const colors = {
   dangerColor: "#F24333",
   warningColor: "#ffed70",
   successColor: "#6eff7a",
-  whiteColor: "F7F4F3",
-  blackColor: "1B2432"
+  whiteColor: "#F7F4F3",
+  blackColor: "#1B2432"
 }
 
 export default colors;
