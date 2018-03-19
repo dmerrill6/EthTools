@@ -1,10 +1,4 @@
 import {createSelector} from 'reselect';
+import {entitiesSelector} from './entities';
 
-const contractsSelector = (state) => state.contracts;
-
-export const contractAddressSelector = createSelector(
-  contractsSelector,
-  (contracts) => {
-    return contracts.contractAddress;
-  }
-);
+export const contractsSelector = createSelector(entitiesSelector, (entities) => entities.contracts);
