@@ -19,7 +19,7 @@ class MetamaskLoader extends React.Component {
     // We set a timeout so that metamask loading dialog can be read.
     setTimeout(() => {
       this.props.loadMetamask();
-    }, 3000);
+    }, 2000);
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -27,7 +27,7 @@ class MetamaskLoader extends React.Component {
       this.setState({showSnackbar: true})
     }
   };
-  
+
 
   handleSnackbarClose () {
     this.setState({showSnackbar: false})
@@ -38,7 +38,7 @@ class MetamaskLoader extends React.Component {
       <React.Fragment>
         <Notice active={!this.props.web3} type='warning'>
           <CircularProgress />
-          <span style={{marginLeft: 10}}>Connecting with Metamask</span>
+          <span style={{marginLeft: 10}}>Connecting to the Blockchain</span>
         </Notice>
         <Snackbar
           open={this.state.showSnackbar}

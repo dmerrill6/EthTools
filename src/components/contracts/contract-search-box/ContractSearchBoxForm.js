@@ -3,7 +3,6 @@ import TextField from 'material-ui/TextField';
 import styled from 'styled-components';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Field, reduxForm } from 'redux-form';
-import { setContractAddress } from '../../../redux/actions/contracts';
 
 const ContractSearchBoxContainer = styled.div`
   display: inline-block;
@@ -50,7 +49,7 @@ const ContractSearchBoxForm = (props) => (
         fullWidth
       />
     </ContractSearchBoxContainer>
-    <RaisedButton type='submit' label="Search" secondary={true} />
+    <RaisedButton disabled={props.submitting || props.invalid} type='submit' label="Search" secondary={true} />
   </form>
 )
 

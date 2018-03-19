@@ -1,8 +1,5 @@
-export const SET_CONTRACT_ADDRESS = 'SET_CONTRACT_ADDRESS';
+import {updateEntity, addEntity} from './entities';
 
-export const setContractAddress = (address) => {
-  return {
-    type: SET_CONTRACT_ADDRESS,
-    address
-  };
+export const updateContract = (contractAddress, attributes) => (dispatch) => {
+  dispatch(updateEntity('contract', contractAddress, attributes));
 };

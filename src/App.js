@@ -19,7 +19,7 @@ const App = ({ store }) => (
       <Router>
         <Layout>
           <Route exact path="/" component={Home}/>
-          <Route path="/contracts" component={ContractUI} />
+          <Route path="/contracts" component={ContractUI}/>
           <Route path="/about" component={About}/>
         </Layout>
       </Router>
