@@ -7,7 +7,7 @@ import { SubmissionError } from 'redux-form';
 
 class ContractABI extends Component {
   handleSubmit = (fields) => {
-    const sleep = new Promise(resolve => setTimeout(resolve, 1000)); // Delay a little bit to show loading animation
+    const sleep = new Promise(resolve => setTimeout(resolve, 300)); // Delay a little bit to show loading animation
     return sleep.then(() => {
       try {
         // Try to set up contract. If it throws, an invalid ABI was supplied.

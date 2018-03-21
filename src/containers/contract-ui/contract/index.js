@@ -2,31 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import styled from 'styled-components';
+import generateContractCallOrSendFunction from './generateContractCallOrSendFunction';
 import ContractABI from '../../../components/contracts/contract-abi/index';
 import SelectedContractBreadcrumb from '../../../components/contracts/contract-search-box/SelectedContractBreadcrumb';
 import Functions from '../../../components/contracts/functions/index';
 import { updateContract } from '../../../redux/actions/contracts';
-import { web3Selector } from '../../../redux/selectors/web3';
+import { web3Selector, currentAccountSelector } from '../../../redux/selectors/web3';
 import { contractsSelector } from '../../../redux/selectors/contracts';
 
 const Divider = styled.div`
   margin: 1em 0;
 `
-
-const generateContractCallOrSendFunction = (web3, abi, address, type) => {
-  const contract = new web3.eth.Contract(abi, address);
-  return (funcName, inputValues) => {
-    let promise;
-    if (type === 'call') {
-      promise = contract.methods[funcName].apply(this, inputValues).call();
-    } else if (type === 'send') {
-      promise = contract.methods[funcName].apply(this, inputValues).send({
-        from: web3.eth.accounts[0]
-      });
-    }
-
-  }
-}
 
 class Contract extends Component {
   handleSetContractABI (address, abi) {
@@ -34,7 +20,7 @@ class Contract extends Component {
   }
 
   render() {
-    const { match: { params: {address} }, history, web3, contracts = {}} = this.props;
+    const { match: { params: {address} }, history, web3, contracts = {}, currentAccount} = this.props;
     const currContract = contracts[address];
     let abi = [];
     if (currContract && currContract.abi){
@@ -43,8 +29,8 @@ class Contract extends Component {
     let handleFunctionCall = () => { };
     let handleFunctionSend = () => { };
     if (currContract && abi.length > 0 && address) {
-      handleFunctionCall = generateContractCallOrSendFunction(web3, abi, address, 'call');
-      handleFunctionSend = generateContractCallOrSendFunction(web3, abi, address, 'send');
+      handleFunctionCall = generateContractCallOrSendFunction(web3, abi, address, 'call', currentAccount);
+      handleFunctionSend = generateContractCallOrSendFunction(web3, abi, address, 'send', currentAccount);
     }
     return (
       <React.Fragment>
@@ -71,6 +57,7 @@ class Contract extends Component {
 
 Contract.propTypes = {
   contracts: PropTypes.object,
+  currentAccount: PropTypes.string,
   updateContract: PropTypes.func,
   web3: PropTypes.object
 }
@@ -78,7 +65,8 @@ Contract.propTypes = {
 const mapStateToProps = (state) => {
   return {
     web3: web3Selector(state),
-    contracts: contractsSelector(state)
+    contracts: contractsSelector(state),
+    currentAccount: currentAccountSelector(state)
   };
 }
 

@@ -4,13 +4,15 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import getTheme from './theme';
 import AppBarContent from '../../components/app-bar-content';
-import MetamaskHandler from '../../components/metamask';
+import AccountReloader from '../metamask/account-reloader/index';
+import MetamaskHandler from '../metamask/index';
 
 const Layout = (props) => (
   <MuiThemeProvider muiTheme={getTheme()}>
     <div>
       <AppBar
         title={<AppBarContent/>}
+        iconElementRight={<AccountReloader/>}
       />
       <MetamaskHandler/>
       {props.children}

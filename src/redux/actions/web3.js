@@ -1,18 +1,20 @@
 import { metamaskLoader } from '../../utils/metamask';
 
 export const LOAD_METAMASK = 'LOAD_METAMASK';
-export const METAMASK_LOAD_FAILURE = 'METAMASK_LOAD_FAILURE';
+export const SET_CURRENT_ACCOUNT = 'SET_CURRENT_ACCOUNT';
 
 export const loadMetamask = () => dispatch => {
-  const web3js = metamaskLoader();
-  if (web3js) {
+  metamaskLoader((web3js) => {
     dispatch({
       type: LOAD_METAMASK,
       web3js
     });
-  } else {
-    dispatch({
-      type: METAMASK_LOAD_FAILURE
-    });
-  }
+  });
 };
+
+export const setCurrentAccount = (account) => {
+  return {
+    type: SET_CURRENT_ACCOUNT,
+    account
+  }
+}

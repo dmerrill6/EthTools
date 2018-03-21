@@ -23,7 +23,7 @@ class MetamaskLoader extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (nextProps.web3 && !this.props.web3) { // Web3 Loaded
+    if (nextProps.web3 && !this.props.web3 && !nextProps.web3.hasOwnProperty('error')) { // Web3 Loaded
       this.setState({showSnackbar: true})
     }
   };
