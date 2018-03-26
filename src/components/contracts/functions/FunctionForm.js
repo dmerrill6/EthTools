@@ -7,7 +7,7 @@ import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import FunctionSignature from './FunctionSignature';
-import functionParamsAsString from './functionParamsAsString';
+import {functionParamsAsString} from './utils';
 import {formInputParamIntoWeb3Param, web3ParamToPrintableString} from './utils';
 
 const SubmitError = styled.div`
@@ -34,7 +34,7 @@ const renderField = ({
     </div>
   )
 
-class FunctionForm extends React.Component {
+  class FunctionForm extends React.Component {
   constructor () {
     super();
     this.state = {
@@ -47,7 +47,7 @@ class FunctionForm extends React.Component {
   }
 
   render () {
-    const { name = '', inputs, outputs, onFunctionCall, submitting, handleSubmit, error, isConstant } = this.props;
+    const { name = '', inputs, outputs, onFunctionCall, submitting, handleSubmit, error, isConstant, initiallyOpen = false } = this.props;
 
     const inputsAsArr = Object.values(this.state.inputValues);
     const inputValuesAsString = functionParamsAsString(inputsAsArr.map(input => {
@@ -60,6 +60,7 @@ class FunctionForm extends React.Component {
           primaryText={<FunctionSignature name={name} inputs={inputs} outputs={outputs} />}
           primaryTogglesNestedList
           leftAvatar={<Avatar>{name[0]}</Avatar>}
+          initiallyOpen={initiallyOpen}
           nestedItems={[...inputs.map((input, index) => (
             <ParamsContainer key={`function-${name}-${index}`}>
               <Field

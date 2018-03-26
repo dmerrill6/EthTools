@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import functionParamsAsString from './functionParamsAsString';
+import {functionParamsAsString} from './utils';
 
 const ReturnsContainer = styled.div`
   margin-top: 5px;

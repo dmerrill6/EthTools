@@ -6,7 +6,7 @@ import { Card, CardHeader, CardText } from 'material-ui/Card';
 import Divider from 'material-ui/Divider';
 import {List} from 'material-ui/List';
 
-const generateOnCallHandler = (functionKey, functionInputs, onFunctionCall) => (values) => {
+export const generateOnCallHandler = (functionKey, functionInputs, onFunctionCall) => (values) => {
   /**
    * onfunctionCall expects two arguments:
    * 1. The name of the function that was called,
