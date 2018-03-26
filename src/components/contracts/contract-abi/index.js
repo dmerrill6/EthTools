@@ -31,8 +31,6 @@ class ContractABI extends Component {
           <CardHeader
             title="Paste the Contract ABI"
           />
-          <CardActions>
-          </CardActions>
           <CardText>
             <ContractABIForm onSubmit={this.handleSubmit.bind(this)} />
           </CardText>

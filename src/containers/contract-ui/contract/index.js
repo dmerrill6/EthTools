@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import styled from 'styled-components';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import generateContractCallOrSendFunction from './generateContractCallOrSendFunction';
 import ContractABI from '../../../components/contracts/contract-abi/index';
 import SelectedContractBreadcrumb from '../../../components/contracts/contract-search-box/SelectedContractBreadcrumb';
@@ -15,8 +17,32 @@ const Divider = styled.div`
 `
 
 class Contract extends Component {
+  constructor() {
+    super();
+    this.state = {
+      showCallResultModal: false,
+      callResult: '',
+      calledFunction: ''
+    };
+    this.handleContractCallResult = this.handleContractCallResult.bind(this);
+    this.handleContractCallResultError = this.handleContractCallResultError.bind(this);
+    this.handleCloseCallResultDialog = this.handleCloseCallResultDialog.bind(this);
+  }
+
   handleSetContractABI (address, abi) {
     this.props.updateContract(address, {abi});
+  }
+
+  handleContractCallResult ({result, functionName}) {
+    this.setState({callResult: JSON.stringify(result), calledFunction: functionName, showCallResultModal: true});
+  }
+
+  handleContractCallResultError({ error, functionName }) {
+    this.setState({ callResult: `Error: ${JSON.stringify(error)}`, calledFunction: functionName, showCallResultModal: true });
+  }
+
+  handleCloseCallResultDialog() {
+    this.setState({showCallResultModal: false});
   }
 
   render() {
@@ -29,8 +55,24 @@ class Contract extends Component {
     let handleFunctionCall = () => { };
     let handleFunctionSend = () => { };
     if (currContract && abi.length > 0 && address) {
-      handleFunctionCall = generateContractCallOrSendFunction(web3, abi, address, 'call', currentAccount);
-      handleFunctionSend = generateContractCallOrSendFunction(web3, abi, address, 'send', currentAccount);
+      handleFunctionCall = generateContractCallOrSendFunction(
+        web3,
+        abi,
+        address,
+        'call',
+        currentAccount,
+        this.handleContractCallResult,
+        this.handleContractCallResultError
+      );
+      handleFunctionSend = generateContractCallOrSendFunction(
+        web3,
+        abi,
+        address,
+        'send',
+        currentAccount,
+        this.handleContractCallResult,
+        this.handleContractCallResultError
+      );
     }
     return (
       <React.Fragment>
@@ -47,9 +89,24 @@ class Contract extends Component {
         />
         <Divider />
         <Functions
-        abi={abi}
-        onFunctionCall={handleFunctionCall}
-        onFunctionSend={handleFunctionSend}/>
+          abi={abi}
+          onFunctionCall={handleFunctionCall}
+          onFunctionSend={handleFunctionSend}/>
+        <Dialog
+          title={`Contract call result for ${this.state.calledFunction}`}
+          actions={[
+            <FlatButton
+              label="Close"
+              primary={true}
+              onClick={this.handleCloseCallResultDialog}
+            />
+          ]}
+          modal={false}
+          open={this.state.showCallResultModal}
+          onRequestClose={this.handleCloseCallResultDialog}
+        >
+          {this.state.callResult}
+        </Dialog>
       </React.Fragment>
     )
   }

@@ -30,7 +30,7 @@ const textColor = (type) => {
 }
 
 const NoticeDiv = styled.div`
-  position: fixed;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
