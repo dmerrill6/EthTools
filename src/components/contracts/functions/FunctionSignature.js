@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {functionParamsAsString} from './utils';
 
@@ -11,7 +12,7 @@ const NoParameterContainer = styled.span`
   color: #afafaf;
 `
 
-const FunctionSignature = ({name, inputs, outputs}) => {
+const FunctionSignature = ({name, inputs, outputs, isFunction}) => {
   const returns = functionParamsAsString(outputs, {withType: true, withParentheses: false});
   let params = ' 0 parameters';
   let noParams = true;
@@ -22,8 +23,11 @@ const FunctionSignature = ({name, inputs, outputs}) => {
   return (
     <div>
       <div>
+        {isFunction === false && (
+          <span>{returns}</span>
+        )}
         <b>{name}</b>
-        {noParams ? (
+        {noParams && isFunction ? (
           <NoParameterContainer>{params}</NoParameterContainer>
         ) : (
           <span>{params}</span>
@@ -31,15 +35,32 @@ const FunctionSignature = ({name, inputs, outputs}) => {
       </div>
       <ReturnsContainer>
         {
-          returns !== '' ? (
-            <span>Returns: <i>{returns}</i></span>
-          ) : (
-            <span>Returns <i>void</i></span>
+          isFunction && returns !== '' && (
+            <span>
+              Returns: <i>{returns}</i>
+            </span>
           )
         }
+        { isFunction && returns === '' && (
+          <span>Returns <i>void</i></span>
+        )}
       </ReturnsContainer>
     </div>
   );
+}
+
+FunctionSignature.propTypes = {
+  inputs: PropTypes.array,
+  isFunction: PropTypes.bool,
+  name: PropTypes.string,
+  outputs: PropTypes.array
+}
+
+FunctionSignature.defaultPropTypes = {
+  inputs: [],
+  isFunction: () => {},
+  name: '',
+  outputs: []
 }
 
 export default FunctionSignature;

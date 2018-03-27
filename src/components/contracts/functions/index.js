@@ -10,15 +10,16 @@ export const generateOnCallHandler = (functionKey, functionInputs, onFunctionCal
   /**
    * onfunctionCall expects two arguments:
    * 1. The name of the function that was called,
-   * 2. and an array of parameters.
+   * 2. and an array of parameters (each with the shape {value, type}).
    * We must transform the result of the FunctionForm (object of values)
    * to the array of params expected by onFunctionCall.
    */
-  const valuesAsArray = functionInputs.map((input, index) => {
+  const functionParams = functionInputs.map((input, index) => {
     const currValue = values[`input_${index}`];
-    return formInputParamIntoWeb3Param(currValue, input.type);
+    const web3Value = formInputParamIntoWeb3Param(currValue, input.type);
+    return {type: input.type, value: web3Value};
   });
-  return onFunctionCall(functionKey, valuesAsArray);
+  return onFunctionCall(functionKey, functionParams);
 }
 
 const Functions = ({ abi = [], onFunctionCall = () => { }, onFunctionSend = () => { }}) => {
@@ -42,6 +43,7 @@ const Functions = ({ abi = [], onFunctionCall = () => { }, onFunctionSend = () =
                     form={`ConstantFunctionForm_${index}` /* We must use the index as the name may not be unique (function overloading) */}
                     name={elem.name}
                     isConstant
+                    isFunction={elem.type==='function'}
                     inputs={elem.inputs}
                     outputs={elem.outputs}
                     onFunctionCall={generateOnCallHandler(elem.name, elem.inputs, onFunctionCall)}

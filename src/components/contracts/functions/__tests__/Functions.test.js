@@ -38,8 +38,8 @@ describe('generateOnCallHandler', () => {
       'input_0': 'firstParamValue',
       'input_1': 'secondParamValue'
     };
-    const onFunctionCall = (functionKey, valueArr) => {
-      expect(valueArr).toEqual(['firstParamValue', 'secondParamValue'])
+    const onFunctionCall = (functionKey, params) => {
+      expect(params).toEqual([{type: 'string', value: 'firstParamValue'}, {type: 'uint256', value: 'secondParamValue'}])
     }
     generateOnCallHandler(
       'functionName',
