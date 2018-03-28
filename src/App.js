@@ -3,7 +3,8 @@ import './App.css';
 import { Provider } from 'react-redux';
 import {
   BrowserRouter as Router,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom';
 
 import Home from './containers/home/index';
@@ -18,7 +19,9 @@ const App = ({ store }) => (
     <Provider store={store}>
       <Router>
         <Layout>
-          <Route exact path="/" component={Home}/>
+          <Route exact path="/" render={() => (
+            <Redirect to='/contracts'/>
+          )}/>
           <Route path="/contracts" component={ContractUI}/>
           <Route path="/about" component={About}/>
         </Layout>
