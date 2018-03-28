@@ -1,4 +1,4 @@
-const nonParseableTypes = ['string', 'address'];
+const nonParseableTypes = ['string', 'address', 'bytes'];
 
 /**
  * TODO Test all possible variable types (like bytes32)
@@ -19,8 +19,14 @@ export const formInputParamIntoWeb3Param = (input, inputType) => {
 
 export const web3ParamToPrintableString = (input) => {
   if (typeof input === 'string') return `"${input}"`;
-  if (input instanceof Array) return `[${input}]`;
-  return input;
+  if (input instanceof Array){
+    let arrayOfStrings = false;
+    input.forEach(element => {
+      if (typeof element === 'string') arrayOfStrings = true;
+    });
+    return `[${input.map(elem => arrayOfStrings ? `"${elem}"` : String(elem)).join(', ')}]`;
+  }
+  return String(input);
 }
 
 export const functionParamsAsString = (inputs, { withType = false, withParentheses = true } = {}) => {
