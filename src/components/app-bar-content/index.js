@@ -33,6 +33,9 @@ const AppBarContent = (props) => (
     <Link to='/contracts'>
       <MenuButton label='Contracts' />
     </Link>
+    <Link to='/deploy'>
+      <MenuButton label='Deploy' />
+    </Link>
     <Link to='/about'>
       <MenuButton label='About' />
     </Link>

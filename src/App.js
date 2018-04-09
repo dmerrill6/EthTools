@@ -9,6 +9,7 @@ import {
 
 import Home from './containers/home/index';
 import ContractUI from './containers/contract-ui';
+import Deploy from './containers/deploy';
 import About from './containers/about';
 import Layout from './containers/layout';
 
@@ -23,6 +24,7 @@ const App = ({ store }) => (
             <Redirect to='/contracts'/>
           )}/>
           <Route path="/contracts" component={ContractUI}/>
+          <Route path="/deploy" component={Deploy} />
           <Route path="/about" component={About}/>
         </Layout>
       </Router>
