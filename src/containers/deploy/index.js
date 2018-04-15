@@ -127,7 +127,7 @@ class Deploy extends React.Component {
             <h4>
               {!this.state.deployedAddress ? 'Waiting for blockchain...' : (
                 <EtherscanLink
-                  to={`/address/${currentAccount}`}
+                  to={`/address/${this.state.deployedAddress}`}
                   target='_blank'>
                   {`Deployed at ${this.state.deployedAddress}`}
                 </EtherscanLink>

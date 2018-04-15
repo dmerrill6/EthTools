@@ -31,7 +31,7 @@ const AppBarContent = (props) => (
       <Title><Logo src={logo} alt="logo" />EthTools</Title>
     </Link>
     <Link to='/contracts'>
-      <MenuButton label='Contracts' />
+      <MenuButton label='Explore Contract' />
     </Link>
     <Link to='/deploy'>
       <MenuButton label='Deploy' />
