@@ -58,7 +58,7 @@ const Functions = ({ abi = [], onFunctionCall = () => { }, onFunctionSend = () =
       <Card containerStyle={{ backgroundColor: 'white', marginTop: '20px' }}>
         <CardHeader
           title="State changing functions"
-          subtitle="A transaction must be executed. It will be handled through MetaMask."
+          subtitle="A transaction must be executed. It will be handled by MetaMask."
           actAsExpander={true}
           showExpandableButton={true}
         />

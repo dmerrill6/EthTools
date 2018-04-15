@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ContractABIForm from './ContractABIForm';
-import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
-import Chip from 'material-ui/Chip';
+import { Card, CardHeader, CardText } from 'material-ui/Card';
 import { SubmissionError } from 'redux-form';
 
 class ContractABI extends Component {
@@ -23,21 +22,19 @@ class ContractABI extends Component {
     });
   }
 
-  render() {
-    const component = this.props.alreadySelected ?  (
-      <Chip onRequestDelete={this.props.onSetContractABI.bind(this, '')}>Contract ABI set</Chip>
-    ) : (
-        <Card containerStyle={{backgroundColor: 'white'}}>
-          <CardHeader
-            title="Paste the Contract ABI"
-          />
-          <CardText>
-            <ContractABIForm onSubmit={this.handleSubmit.bind(this)} />
-          </CardText>
-        </Card>
+  render () {
+    return (
+      <Card containerStyle={{backgroundColor: 'white'}}>
+        <CardHeader
+          title="Paste the Contract ABI"
+        />
+        <CardText>
+          <ContractABIForm onSubmit={this.handleSubmit.bind(this)} />
+        </CardText>
+      </Card>
     )
-    return component;
   }
+
 }
 
 ContractABI.propTypes = {

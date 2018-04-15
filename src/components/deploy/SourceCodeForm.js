@@ -38,41 +38,6 @@ const renderTextField = ({
     {...custom}
   />
 
-const renderArguments = ({fields, meta: {error, submitFailed}}) => (
-  <Card containerStyle={{ backgroundColor: 'white' }}>
-    <CardHeader
-      title="Constructor Arguments"
-      subtitle={`Currently, ${fields.length} arguments are going to be sent to the constructor.`}
-      actAsExpander={true}
-      showExpandableButton={true}
-    />
-    <CardText expandable={true}>
-      <div>
-        <RaisedButton label='Add Argument' onClick={() => fields.push(null)} />
-        <Divider/>
-        {fields.map((argument, index) => (
-          <div>
-            <div style={{display: 'inline-block', width: '80%'}}>
-              <Field
-                key={`deploy_argument_${index}`}
-                label={`Argument #${index}`}
-                name={`arguments[${index}]`}
-                component={renderTextField}
-                multiLine={false}
-                fullWidth
-              />
-            </div>
-            <div style={{ display: 'inline-block', width: '20%' }}>
-              <FlatButton label='x' onClick={() => fields.remove(index)}/>
-            </div>
-          </div>
-        ))}
-      </div>
-    </CardText>
-  </Card>
-
-)
-
 const validate = values => {
   const errors = {}
   const requiredFields = [
@@ -83,13 +48,7 @@ const validate = values => {
       errors[field] = 'Required'
     }
   });
-  const argumentArrayErrors = [];
-  values.arguments && values.arguments.forEach((argument, index) => {
-    if (!argument) argumentArrayErrors[index] = 'Required';
-  });
-  if (argumentArrayErrors.length > 0) {
-    errors.arguments = argumentArrayErrors;
-  }
+
   return errors;
 }
 
@@ -104,8 +63,6 @@ const SourceCodeForm = (props) => (
       hintText='Insert contract source code'
       floatingLabelText='Contract Source Code'
     />
-
-    <FieldArray name='arguments' component={renderArguments} />
     {
       props.submitting && (
         <ProgressWrapper>

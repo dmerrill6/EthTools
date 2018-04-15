@@ -4,29 +4,52 @@ import {connect} from 'react-redux';
 import styled from 'styled-components';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Chip from 'material-ui/Chip';
+import { Tabs, Tab } from 'material-ui/Tabs';
+import ViewHeadline from 'material-ui/svg-icons/action/view-headline';
+import Code from 'material-ui/svg-icons/action/code';
+import colors from '../../../utils/variables/colors';
 import generateContractCallOrSendFunction from './generateContractCallOrSendFunction';
 import ContractABI from '../../../components/contracts/contract-abi/index';
+import CompilerWrapper from '../../../components/contracts/compiler-wrapper/index';
 import SelectedContractBreadcrumb from '../../../components/contracts/contract-search-box/SelectedContractBreadcrumb';
 import Functions from '../../../components/contracts/functions/index';
 import { updateContract } from '../../../redux/actions/contracts';
 import { web3Selector, currentAccountSelector } from '../../../redux/selectors/web3';
 import { contractsSelector } from '../../../redux/selectors/contracts';
+import {selectedCompilerSelector, compilerSourceVersionsSelector} from '../../../redux/selectors/compilers';
+import {fetchCompiler, fetchCompilerVersions} from '../../../redux/actions/compilers';
 
 const Divider = styled.div`
   margin: 1em 0;
 `
-
+const tabStyles = {
+  defaultTab: {
+    backgroundColor: colors.accent1ColorGray,
+    fontWeight: 400
+  },
+  activeTab: {
+    backgroundColor: colors.accent1Color
+  },
+  inkbarStyles: {
+    backgroundColor: colors.primary1Color
+  }
+}
 class Contract extends Component {
   constructor() {
     super();
     this.state = {
       showCallResultModal: false,
       callResult: '',
-      calledFunction: ''
+      calledFunction: '',
+      activeTab: 'abi'
     };
     this.handleContractCallResult = this.handleContractCallResult.bind(this);
     this.handleContractCallResultError = this.handleContractCallResultError.bind(this);
     this.handleCloseCallResultDialog = this.handleCloseCallResultDialog.bind(this);
+    this.handleTabChange = this.handleTabChange.bind(this);
+    this.handleCompiledContractSelect = this.handleCompiledContractSelect.bind(this);
+    this.handleCompiledContractCancel = this.handleCompiledContractCancel.bind(this);
   }
 
   handleSetContractABI (address, abi) {
@@ -45,8 +68,21 @@ class Contract extends Component {
     this.setState({showCallResultModal: false});
   }
 
+  handleTabChange(value) {
+    this.setState({activeTab: value});
+  }
+
+  handleCompiledContractSelect(address, contract) {
+    this.props.updateContract(address, {abi: contract.interface});
+  }
+
+  handleCompiledContractCancel(address) {
+    this.props.updateContract(address, {abi: ''})
+  }
+
   render() {
-    const { match: { params: {address} }, history, web3, contracts = {}, currentAccount} = this.props;
+    const { match: { params: {address} }, history, web3, contracts = {}, currentAccount,
+      compilerSources, compiler, fetchCompilerVersions, fetchCompiler} = this.props;
     const currContract = contracts[address];
     let abi = [];
     if (currContract && currContract.abi){
@@ -81,12 +117,36 @@ class Contract extends Component {
           resetAddress={() => {history.push('/contracts')}}
         />
         <Divider />
-        <ContractABI
-          web3={web3}
-          onSetContractABI={this.handleSetContractABI.bind(this, address)}
-          contractAddress={address}
-          alreadySelected={currContract && currContract.abi}
-        />
+        { currContract && currContract.abi ? (
+          <Chip onRequestDelete={this.handleSetContractABI.bind(this, '')}>Contract Set</Chip>
+        ) : (
+          <Tabs
+            inkBarStyle={tabStyles.inkbarStyles}
+            value={this.state.activeTab}
+            onChange={this.handleTabChange}
+            tabItemContainertyle={{display: 'none'}}
+          >
+            <Tab style={this.state.activeTab === 'abi' ? tabStyles.activeTab : tabStyles.defaultTab}
+              label="From Contract ABI" value="abi" icon={<ViewHeadline />}>
+              <ContractABI
+                web3={web3}
+                onSetContractABI={this.handleSetContractABI.bind(this, address)}
+                contractAddress={address}
+              />
+            </Tab>
+            <Tab style={this.state.activeTab === 'code' ? tabStyles.activeTab : tabStyles.defaultTab}
+              label="From Contract Code" value="code" icon={<Code />}>
+              <CompilerWrapper
+                compilerSources={compilerSources}
+                compiler={compiler}
+                fetchCompilerVersions={fetchCompilerVersions}
+                fetchCompiler={fetchCompiler}
+                onContractSelect={this.handleCompiledContractSelect.bind(this, address)}
+              />
+            </Tab>
+          </Tabs>
+        ) }
+
         <Divider />
         <Functions
           abi={abi}
@@ -114,6 +174,10 @@ class Contract extends Component {
 
 Contract.propTypes = {
   contracts: PropTypes.object,
+  compiler: PropTypes.object,
+  compilerSources: PropTypes.array,
+  fetchCompiler: PropTypes.func,
+  fetchCompilerVersions: PropTypes.func,
   currentAccount: PropTypes.string,
   updateContract: PropTypes.func,
   web3: PropTypes.object
@@ -123,13 +187,17 @@ const mapStateToProps = (state) => {
   return {
     web3: web3Selector(state),
     contracts: contractsSelector(state),
-    currentAccount: currentAccountSelector(state)
+    currentAccount: currentAccountSelector(state),
+    compilerSources: compilerSourceVersionsSelector(state),
+    compiler: selectedCompilerSelector(state)
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateContract: (address, attributes) => dispatch(updateContract(address, attributes))
+    updateContract: (address, attributes) => dispatch(updateContract(address, attributes)),
+    fetchCompilerVersions: () => dispatch(fetchCompilerVersions()),
+    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion))
   }
 }
 

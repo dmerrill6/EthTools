@@ -1,141 +1,141 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import Dialog from 'material-ui/Dialog';
-import RaisedButton from 'material-ui/RaisedButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import PaddedContainer from '../../components/visual/PaddedContainer';
-import SourceCodeForm from '../../components/deploy/SourceCodeForm';
-import { web3Selector, currentAccountSelector} from '../../redux/selectors/web3';
+import { SubmissionError } from 'redux-form'
 import styled from 'styled-components';
-/*eslint no-unused-vars: 0*/ // solcBrowserWrapper is loaded into the window object when imported
-import solcBrowserWrapper from 'browser-solc';
-import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import CircularProgress from 'material-ui/CircularProgress';
+import PaddedContainer from '../../components/visual/PaddedContainer';
+import EtherscanLink from '../../components/etherscan/EtherscanLink';
+import Compiler from '../../components/compiler/Compiler';
+import ConstructorArgumentsForm from '../../components/deploy/ConstructorArgumentsForm';
+import { web3Selector, currentAccountSelector} from '../../redux/selectors/web3';
+import { fetchCompilerVersions, fetchCompiler } from '../../redux/actions/compilers';
+import {selectedCompilerSelector, compilerSourceVersionsSelector} from '../../redux/selectors/compilers';
 
 const Divider = styled.div`
   height: 10px;
 `
 
-const DeployMessagesContainer = styled.div`
-  padding: 1em;
-  background-color: #404040;
-  color: white;
-  font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
-  font-size: 11pt;
-  margin-bottom: 2em;
-  max-height: 300px;
-  overflow-x: scroll;
+const Border = styled.div`
+  height: 10px;
+  border-bottom: solid 1px #c0c0c0;
 `
-
 class Deploy extends React.Component {
   constructor() {
     super();
     this.state = {
-      deployMessages: [],
       contracts: {},
-      loading: false,
-      showModal: false,
-      arguments: []
+      showDeployingModal: false,
+      deployedAddress: '',
+      deployError: ''
     }
-    this.handleByteCodeSubmit = this.handleByteCodeSubmit.bind(this);
-    this._addDeployMessage = this._addDeployMessage.bind(this);
-    this.deployContract = this.deployContract.bind(this);
-    this.toggleModal = this.toggleModal.bind(this);
+    this.handleContractCompile = this.handleContractCompile.bind(this);
+    this.handleDeployModalClose = this.handleDeployModalClose.bind(this);
   }
 
-  handleByteCodeSubmit(fields) {
-    this.setState({showModal: true, loading: true, arguments: fields.arguments || [], deployMessages: []});
-    this._addDeployMessage("Fetching Solidity compiler versions.");
-    window.BrowserSolc.getVersions((jsonSources, jsonReleases) => {
-      this._addDeployMessage("Choosing most recent compiler version.", () => {
-        const selectedVersion = jsonSources.filter(source => source.indexOf('nightly') === -1)[0];
-        this._addDeployMessage(`Version ${selectedVersion} selected. Fetching compiler code.`);
-        window.BrowserSolc.loadVersion(selectedVersion, (compiler) => {
-          this._addDeployMessage("Compiler code fetched. Compiling code.");
-          const optimize = 1;
-          const result = compiler.compile(fields.contract_source_code, optimize);
-          this._addDeployMessage(`Compiled ${Object.keys(result.contracts).length} contracts.`);
-          console.log("Compiled contract: ", result);
-          result.errors.forEach(error => {
-            this._addDeployMessage(error);
-          });
-          this._addDeployMessage('View the logs if you want to check the compiled objects.');
-          this.setState({contracts: result.contracts, loading: false});
-        });
-      });
-    });
+  handleDeployModalClose() {
+    this.setState({showDeployingModal: !this.state.showDeployingModal});
   }
 
-  toggleModal () {
-    this.setState({showModal: !this.state.showModal});
+  async handleContractCompile(contracts) {
+    this.setState({contracts: contracts.contracts});
   }
 
-  deployContract (byteCode, jsonInterface, fromAddress) {
+  setCurrentDeploy (contractKey) {
+    this.setState({currentActiveDeploy: contractKey});
+  }
+
+  deployContract (byteCode, jsonInterface, fromAddress, fields) {
     const web3 = this.props.web3;
     const contract = new web3.eth.Contract(JSON.parse(jsonInterface));
+    this.setState({showDeployingModal: true});
     try {
       contract.deploy({
         data: '0x' + byteCode,
-        arguments: this.state.arguments
+        arguments: fields.arguments
       }).send({
         from: fromAddress
       }).then(newContract => {
         console.log("Deployed contract: ", newContract);
+        this.setState({deployedAddress: newContract._address})
+      }).error(error => {
+        this.setState({deployError: error.message});
       });
     } catch (error) {
-      this._addDeployMessage('error: ' + error.message);
+      this.setState({showDeployingModal: false});
+      throw new SubmissionError({
+        _error: error.message
+      })
     }
   }
 
-  _addDeployMessage(message, callback = () => {}) {
-    this.setState({ deployMessages: [...this.state.deployMessages, message] }, callback);
-  }
-
   render() {
-    const {currentAccount} = this.props;
+    const { currentAccount, compilerSources, compiler, fetchCompilerVersions, fetchCompiler } = this.props;
     return (
       <PaddedContainer>
-        <Card containerStyle={{ backgroundColor: 'white' }}>
-          <CardHeader
-            title="Paste the Contract Source Code"
-          />
-          <CardText>
-            <SourceCodeForm onSubmit={this.handleByteCodeSubmit} />
-          </CardText>
-
-        </Card>
-        <Dialog
-          title='Compiling contract'
-          modal
-          open={this.state.showModal}
-          actions={[
-            <FlatButton label='Cancel' primary onClick={this.toggleModal} />
-          ]}
-        >
-          {this.state.loading && (
-            <div style={{textAlign: 'center'}}>
-              <CircularProgress size={20} thickness={5} />
-            </div>
-          )}
-          <DeployMessagesContainer>
-            {this.state.deployMessages.map((msg, idx) => (
-              <p key={`deploy_message_${idx}`}>{msg}</p>
-            ))}
-          </DeployMessagesContainer>
-          <div>
-            {Object.keys(this.state.contracts).map((contract, idx) => {
+        <Compiler
+          compilerSources={compilerSources}
+          compiler={compiler}
+          fetchCompilerVersions={fetchCompilerVersions}
+          fetchCompiler={fetchCompiler}
+          onContractCompile={this.handleContractCompile}
+          actions={
+            Object.keys(this.state.contracts).map((contract, idx) => {
               const contractObj = this.state.contracts[contract];
               return (
                 <div key={`deploy_contract_${idx}`}>
-                  <RaisedButton
-                    label={`Deploy ${contract}`}
-                    onClick={this.deployContract.bind(this, contractObj.bytecode, contractObj.interface, currentAccount)}
-                  />
-                  <Divider/>
+                  {contract !== this.state.currentActiveDeploy && (
+                    <React.Fragment>
+                      <RaisedButton
+                        labelStyle={{ textTransform: 'none' }}
+                        label={`Deploy ${contract}`}
+                        onClick={this.setCurrentDeploy.bind(this, contract)}
+                      />
+                      <Divider />
+                    </React.Fragment>
+                  )}
+                  {contract === this.state.currentActiveDeploy && (
+                    <div key={`deploy_arguments_${idx}`}>
+                      <Divider />
+                      <Border />
+                      <h4>Setting up arguments for {contract}</h4>
+                      <ConstructorArgumentsForm
+                        onSubmit={this.deployContract.bind(this, contractObj.bytecode, contractObj.interface, currentAccount)} />
+                      <Divider />
+                      <Border />
+                      <Divider />
+                    </div>
+                  )}
+                  <Divider />
                 </div>
               )
-            })}
+            })
+          }
+        />
+        <Dialog
+          title={this.state.deployedAddress ? 'Contract Deployed!' : 'Waiting for deploy transaction to go live'}
+          onRequestClose={this.handleDeployModalClose}
+          open={this.state.showDeployingModal}>
+
+          <div style={{textAlign: 'center'}}>
+            { !this.state.deployedAddress && (
+              <CircularProgress size={80} thickness={5} />
+            )}
+            <div/>
+            <h4>
+              {!this.state.deployedAddress ? 'Waiting for blockchain...' : (
+                <EtherscanLink
+                  to={`/address/${currentAccount}`}
+                  target='_blank'>
+                  {`Deployed at ${this.state.deployedAddress}`}
+                </EtherscanLink>
+              )}
+            </h4>
+            {this.state.deployError && (
+              <p>{this.state.deployError}</p>
+            )}
           </div>
         </Dialog>
       </PaddedContainer>
@@ -144,15 +144,28 @@ class Deploy extends React.Component {
 }
 
 Deploy.propTypes = {
-  web3: PropTypes.object,
-  currentAccount: PropTypes.string
-}
+  compiler: PropTypes.object,
+  compilerSources: PropTypes.array,
+  currentAccount: PropTypes.string,
+  fetchCompiler: PropTypes.func,
+  fetchCompilerVersions: PropTypes.func,
+  web3: PropTypes.object
+};
 
 const mapStateToProps = (state) => {
   return {
     web3: web3Selector(state),
-    currentAccount: currentAccountSelector(state)
-  }
-}
+    currentAccount: currentAccountSelector(state),
+    compilerSources: compilerSourceVersionsSelector(state),
+    compiler: selectedCompilerSelector(state)
+  };
+};
 
-export default connect(mapStateToProps)(Deploy);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchCompilerVersions: () => dispatch(fetchCompilerVersions()),
+    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Deploy);

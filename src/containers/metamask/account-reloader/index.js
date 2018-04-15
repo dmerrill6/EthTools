@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import styled from 'styled-components';
 import FlatButton from 'material-ui/FlatButton';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import EtherscanLink from '../../../components/etherscan/EtherscanLink';
 import { setCurrentAccount } from '../../../redux/actions/web3';
 import { currentAccountSelector, web3Selector } from '../../../redux/selectors/web3';
 
@@ -27,6 +28,7 @@ class AccountReloader extends React.Component {
   }
 
   componentDidMount() {
+    this._tryToUpdateCurrentAccount();
     setInterval(this._tryToUpdateCurrentAccount, 2000);
   }
 
@@ -48,11 +50,17 @@ class AccountReloader extends React.Component {
     const label = currentAccountSet ? currentAccount : 'Waiting for connection...';
     return (
       <Wrapper>
-        <Link
-          target={currentAccountSet ? '_blank' : ''}
-          to={currentAccountSet ? `https://etherscan.io/address/${currentAccount}` : '#' }>
-          <MenuButton label={label} />
-        </Link>
+        {currentAccountSet && (this.props.web3 && !this.props.web3.hasOwnProperty('error')) ? (
+          <EtherscanLink
+            target='_blank'
+            to={`/address/${currentAccount}`}>
+            <MenuButton label={label} />
+          </EtherscanLink>
+        ) : (
+          <Link to='#' >
+            <MenuButton label={label} />
+          </Link>
+        )}
       </Wrapper>
     )
   }
