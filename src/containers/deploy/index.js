@@ -4,10 +4,8 @@ import {connect} from 'react-redux';
 import { SubmissionError } from 'redux-form'
 import styled from 'styled-components';
 import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
-import CircularProgress from 'material-ui/CircularProgress';
 import PaddedContainer from '../../components/visual/PaddedContainer';
-import EtherscanLink from '../../components/etherscan/EtherscanLink';
+import TransactionPendingDialog from '../../components/transaction-pending-dialog/index';
 import Compiler from '../../components/compiler/Compiler';
 import ConstructorArgumentsForm from '../../components/deploy/ConstructorArgumentsForm';
 import { web3Selector, currentAccountSelector} from '../../redux/selectors/web3';
@@ -114,30 +112,14 @@ class Deploy extends React.Component {
             })
           }
         />
-        <Dialog
-          title={this.state.deployedAddress ? 'Contract Deployed!' : 'Waiting for deploy transaction to go live'}
-          onRequestClose={this.handleDeployModalClose}
-          open={this.state.showDeployingModal}>
-
-          <div style={{textAlign: 'center'}}>
-            { !this.state.deployedAddress && (
-              <CircularProgress size={80} thickness={5} />
-            )}
-            <div/>
-            <h4>
-              {!this.state.deployedAddress ? 'Waiting for blockchain...' : (
-                <EtherscanLink
-                  to={`/address/${this.state.deployedAddress}`}
-                  target='_blank'>
-                  {`Deployed at ${this.state.deployedAddress}`}
-                </EtherscanLink>
-              )}
-            </h4>
-            {this.state.deployError && (
-              <p>{this.state.deployError}</p>
-            )}
-          </div>
-        </Dialog>
+        <TransactionPendingDialog
+          open={this.state.showDeployingModal}
+          transactionAddress={this.state.deployedAddress}
+          etherscanLink={`/address/${this.state.deployedAddress}`}
+          onClose={this.handleDeployModalClose}
+          transactionError={this.state.deployError}
+          pendingMessage='Waiting for the Blockchain'
+          successTItle='Deploy Transaction mined!' />
       </PaddedContainer>
     );
   }

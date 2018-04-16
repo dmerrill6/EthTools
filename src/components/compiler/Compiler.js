@@ -97,7 +97,6 @@ class Compiler extends React.Component {
         </Card>
         <Dialog
           title='Compiling contract'
-          modal
           open={this.state.showModal}
           bodyStyle={{overflowY: 'scroll'}}
           actions={[

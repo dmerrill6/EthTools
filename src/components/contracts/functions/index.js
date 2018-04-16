@@ -19,7 +19,7 @@ export const generateOnCallHandler = (functionKey, functionInputs, onFunctionCal
     const web3Value = formInputParamIntoWeb3Param(currValue, input.type);
     return {type: input.type, value: web3Value};
   });
-  return onFunctionCall(functionKey, functionParams);
+  return onFunctionCall(functionKey, functionParams, values.send_amount || 0);
 }
 
 const Functions = ({ abi = [], onFunctionCall = () => { }, onFunctionSend = () => { }}) => {
@@ -44,6 +44,7 @@ const Functions = ({ abi = [], onFunctionCall = () => { }, onFunctionSend = () =
                     name={elem.name}
                     isConstant
                     isFunction={elem.type==='function'}
+                    showAmountToSend={false}
                     inputs={elem.inputs}
                     outputs={elem.outputs}
                     onFunctionCall={generateOnCallHandler(elem.name, elem.inputs, onFunctionCall)}
@@ -72,6 +73,7 @@ const Functions = ({ abi = [], onFunctionCall = () => { }, onFunctionSend = () =
                     name={elem.name}
                     inputs={elem.inputs}
                     outputs={elem.outputs}
+                    showAmountToSend
                     onFunctionCall={generateOnCallHandler(elem.name, elem.inputs, onFunctionSend)}
                   />
                   <Divider inset />

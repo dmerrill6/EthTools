@@ -11,6 +11,7 @@ import Code from 'material-ui/svg-icons/action/code';
 import colors from '../../../utils/variables/colors';
 import generateContractCallOrSendFunction from './generateContractCallOrSendFunction';
 import ContractABI from '../../../components/contracts/contract-abi/index';
+import TransactionPendingDialog from '../../../components/transaction-pending-dialog/index';
 import CompilerWrapper from '../../../components/contracts/compiler-wrapper/index';
 import SelectedContractBreadcrumb from '../../../components/contracts/contract-search-box/SelectedContractBreadcrumb';
 import Functions from '../../../components/contracts/functions/index';
@@ -42,14 +43,21 @@ class Contract extends Component {
       showCallResultModal: false,
       callResult: '',
       calledFunction: '',
-      activeTab: 'abi'
+      activeTab: 'abi',
+      showTransactionPendingModal: false,
+      transactionError: '',
+      transactionAddress: '',
+      transactionFunction: ''
     };
     this.handleContractCallResult = this.handleContractCallResult.bind(this);
     this.handleContractCallResultError = this.handleContractCallResultError.bind(this);
+    this.handleContractSendResult = this.handleContractSendResult.bind(this);
+    this.handleContractSendResultError = this.handleContractSendResultError.bind(this);
     this.handleCloseCallResultDialog = this.handleCloseCallResultDialog.bind(this);
     this.handleTabChange = this.handleTabChange.bind(this);
     this.handleCompiledContractSelect = this.handleCompiledContractSelect.bind(this);
     this.handleCompiledContractCancel = this.handleCompiledContractCancel.bind(this);
+    this.handleTransactionModalClose = this.handleTransactionModalClose.bind(this);
   }
 
   handleSetContractABI (address, abi) {
@@ -62,6 +70,14 @@ class Contract extends Component {
 
   handleContractCallResultError({ error, functionName }) {
     this.setState({ callResult: `Error: ${JSON.stringify(error)}`, calledFunction: functionName, showCallResultModal: true });
+  }
+
+  handleContractSendResult({ result }) {
+    this.setState({ transactionAddress: result.transactionHash});
+  }
+
+  handleContractSendResultError({ error }) {
+    this.setState({ transactionError: `Error: ${JSON.stringify(error)}` });
   }
 
   handleCloseCallResultDialog() {
@@ -78,6 +94,10 @@ class Contract extends Component {
 
   handleCompiledContractCancel(address) {
     this.props.updateContract(address, {abi: ''})
+  }
+
+  handleTransactionModalClose() {
+    this.setState({showTransactionPendingModal: false});
   }
 
   render() {
@@ -106,8 +126,9 @@ class Contract extends Component {
         address,
         'send',
         currentAccount,
-        this.handleContractCallResult,
-        this.handleContractCallResultError
+        this.handleContractSendResult,
+        this.handleContractSendResultError,
+        ({functionName}) => {this.setState({showTransactionPendingModal: true, transactionFunction: functionName})}
       );
     }
     return (
@@ -167,6 +188,15 @@ class Contract extends Component {
         >
           {this.state.callResult}
         </Dialog>
+        <TransactionPendingDialog
+          open={this.state.showTransactionPendingModal}
+          transactionAddress={this.state.transactionAddress}
+          onClose={this.handleTransactionModalClose}
+          pendingTitle='Waiting for transaction to be approved and mined'
+          pendingMessage={`Transaction sent for function ${this.state.transactionFunction}`}
+          successMessage='Transaction mined!'
+          etherscanLink={`/tx/${this.state.transactionAddress}`}
+          transactionError={this.state.transactionError} />
       </React.Fragment>
     )
   }

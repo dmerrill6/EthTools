@@ -47,7 +47,8 @@ const renderField = ({
   }
 
   render () {
-    const { name = '', inputs, outputs, onFunctionCall, submitting, handleSubmit, error, isConstant, initiallyOpen, isFunction } = this.props;
+    const { name = '', inputs, outputs, onFunctionCall, submitting, handleSubmit, error,
+            isConstant, initiallyOpen, isFunction, showAmountToSend = false } = this.props;
 
     const inputsAsArr = Object.values(this.state.inputValues);
     const inputValuesAsString = functionParamsAsString(inputsAsArr.map(input => {
@@ -73,7 +74,20 @@ const renderField = ({
                 onChange={this.handleInputValueChange.bind(this, input.type)}
               />
             </ParamsContainer>
-          )), (
+          )),
+            showAmountToSend ? (
+              <ParamsContainer key={`function-${name}-amount`}>
+                <Field
+                  name='send_amount'
+                  type='number'
+                  fullWidth
+                  component={renderField}
+                  label='Amount of ether to send'
+                  paramType='0 by default'
+                />
+              </ParamsContainer>
+            ) : (<div />),
+          (
             <ParamsContainer key={`function-${name}-submit`}>
               {error && <SubmitError>{error}</SubmitError>}
               <RaisedButton
