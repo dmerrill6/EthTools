@@ -30,7 +30,7 @@ class ContractUI extends React.Component {
     return (
       <PaddedContainer>
         <H1 style={{textAlign: 'center', marginBottom: '2em'}}>
-          Insert a <b>contract address</b> to call its methods and read its state
+          Insert a <b>contract address</b> to call its methods or read its state
         </H1>
         <AnimatedLogo faded={!contractNotSelected} active={this.state.searchBoxFocused}/>
         {
@@ -52,9 +52,5 @@ class ContractUI extends React.Component {
     );
   }
 }
-
-ContractUI.propTypes = {
-  children: PropTypes.node
-};
 
 export default ContractUI;
