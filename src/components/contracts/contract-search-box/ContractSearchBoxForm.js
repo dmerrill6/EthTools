@@ -13,15 +13,15 @@ const ContractSearchBoxContainer = styled.div`
 const renderTextField = ({
   input,
   label,
+  placeholder,
   fullWidth,
   meta: { touched, error },
   ...custom
 }) =>
   <TextField
-    hintText={label}
+    hintText={placeholder}
     fullWidth={fullWidth}
     floatingLabelText={label}
-    errorText={touched && error}
     {...input}
     {...custom}
   />
@@ -46,7 +46,10 @@ const ContractSearchBoxForm = (props) => (
         name='address'
         component={renderTextField}
         label='E.g. 0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
+        placeholder='Type or paste the contract address'
         fullWidth
+        onFocus={props.onFocus}
+        onBlur={props.onBlur}
       />
     </ContractSearchBoxContainer>
     <RaisedButton disabled={props.submitting || props.invalid} type='submit' label="Search" secondary={true} />

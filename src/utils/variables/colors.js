@@ -8,6 +8,7 @@ const colors = {
   pickerHeaderColor: "#F24333",
   dangerColor: "#F24333",
   warningColor: "#ffed70",
+  noticeColor: "#1446A0",
   successColor: "#6eff7a",
   whiteColor: "#F7F4F3",
   blackColor: "#1B2432"

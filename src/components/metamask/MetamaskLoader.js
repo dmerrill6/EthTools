@@ -36,8 +36,8 @@ class MetamaskLoader extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Notice active={!this.props.web3} type='warning'>
-          <CircularProgress />
+        <Notice active={!this.props.web3} type='notice'>
+          <CircularProgress color='#ffffff' />
           <span style={{marginLeft: 10}}>Connecting to the Blockchain</span>
         </Notice>
         <Snackbar

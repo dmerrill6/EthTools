@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
-import CircularProgress from 'material-ui/CircularProgress';
 import EtherscanLink from '../etherscan/EtherscanLink';
 import FlatButton from 'material-ui/FlatButton';
+import AnimatedLogo from '../visual/AnimatedLogo';
 
 const TransactionPendingDialog = ({
     transactionAddress,
@@ -26,7 +26,7 @@ const TransactionPendingDialog = ({
       open={open}>
       <div style={{ textAlign: 'center' }}>
         {!transactionAddress && (
-          <CircularProgress size={80} thickness={5} />
+          <AnimatedLogo spinning active />
         )}
         <div />
         <h4>

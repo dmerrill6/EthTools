@@ -1,9 +1,9 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
 import styled from 'styled-components';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Field, reduxForm } from 'redux-form';
+import AnimatedLogo from '../../visual/AnimatedLogo';
 
 const ProgressWrapper = styled.div`
   text-align: center;
@@ -59,7 +59,7 @@ const ContractABIForm = (props) => (
       {
         props.submitting && (
           <ProgressWrapper>
-            <CircularProgress size={80} thickness={5} />
+            <AnimatedLogo spinning active />
           </ProgressWrapper>
         )
       }

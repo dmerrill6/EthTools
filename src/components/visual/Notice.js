@@ -9,6 +9,8 @@ const backgroundColor = (type) => {
       return colors.dangerColor;
     case 'success':
       return colors.successColor;
+    case 'notice':
+      return colors.noticeColor;
     case 'warning':
       return colors.warningColor;
     default:
@@ -21,6 +23,8 @@ const textColor = (type) => {
     case 'danger':
       return colors.whiteColor;
     case 'success':
+      return colors.whiteColor;
+    case 'notice':
       return colors.whiteColor;
     case 'warning':
       return colors.blackColor;

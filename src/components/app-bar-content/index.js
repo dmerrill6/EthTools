@@ -1,8 +1,9 @@
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import styled from 'styled-components';
-import logo from '../../logo.svg';
-import {Link} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
+import colors from '../../utils/variables/colors';
+import logo from '../../assets/logo.svg';
 
 const Title = styled.h1`
   font-size: 1em;
@@ -25,20 +26,24 @@ const MenuButton = styled(FlatButton)`
   }
 `;
 
+const activeStyle = {
+  borderBottom: `solid 2px ${colors.accent1Color}`
+}
+
 const AppBarContent = (props) => (
   <div>
-    <Link to='/'>
+    <NavLink to='/'>
       <Title><Logo src={logo} alt="logo" />EthTools</Title>
-    </Link>
-    <Link to='/contracts'>
+    </NavLink>
+    <NavLink to='/contracts' activeStyle={activeStyle}>
       <MenuButton label='Explore Contract' />
-    </Link>
-    <Link to='/deploy'>
+    </NavLink>
+    <NavLink to='/deploy' activeStyle={activeStyle}>
       <MenuButton label='Deploy' />
-    </Link>
-    <Link to='/about'>
+    </NavLink>
+    <NavLink to='/about' activeStyle={activeStyle}>
       <MenuButton label='About' />
-    </Link>
+    </NavLink>
   </div>
 );
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Field, reduxForm, FieldArray } from 'redux-form';
 import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
 import RaisedButton from 'material-ui/RaisedButton';
 import { Card, CardHeader, CardText } from 'material-ui/Card';
 import styled from 'styled-components';
 import FlatButton from 'material-ui/FlatButton';
+import AnimatedLogo from '../visual/AnimatedLogo';
 
 const Divider = styled.div`
   height: 10px;
@@ -66,7 +66,7 @@ const SourceCodeForm = (props) => (
     {
       props.submitting && (
         <ProgressWrapper>
-          <CircularProgress size={80} thickness={5} />
+          <AnimatedLogo spinning active />
         </ProgressWrapper>
       )
     }

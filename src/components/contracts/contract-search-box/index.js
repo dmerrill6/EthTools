@@ -9,13 +9,16 @@ class ContractSearchBox extends Component {
   }
 
   render() {
+    const {onFocus = () => {}, onBlur = () => {}} = this.props;
     return (
-      <ContractSearchBoxForm onSubmit={this.handleSubmit.bind(this)}/>
+      <ContractSearchBoxForm onFocus={onFocus} onBlur={onBlur} onSubmit={this.handleSubmit.bind(this)}/>
     );
   }
 }
 
 ContractSearchBox.propTypes = {
+  onBlur: PropTypes.func,
+  onFocus: PropTypes.func,
   setContractAddress: PropTypes.func
 };
 
