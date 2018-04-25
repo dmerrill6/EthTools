@@ -11,24 +11,20 @@ const FooterWrapper = styled.div`
   color: ${colors.whiteColor};
 `
 
-const FooterLink = styled.span`
-  color: ${colors.whiteColor};
-  margin: 0 10px;
-  text-decoration: none;
-`
+const footerLinkStyle = {
+  color: `${colors.whiteColor}`,
+  margin: '0 10px',
+  textDecoration: 'none'
+}
 
 const Footer = (props) => {
   return (
     <FooterWrapper>
-      <Link to='/license'>
-        <FooterLink>
-          Terms of Service
-        </FooterLink>
+      <Link style={footerLinkStyle} to='/license'>
+        Terms of Service
       </Link>
-      <Link to='/about'>
-        <FooterLink>
-          About
-        </FooterLink>
+      <Link style={footerLinkStyle} to='/about'>
+        About
       </Link>
     </FooterWrapper>
   );

@@ -8,6 +8,7 @@ import Chip from 'material-ui/Chip';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import ViewHeadline from 'material-ui/svg-icons/action/view-headline';
 import Code from 'material-ui/svg-icons/action/code';
+import qs from 'query-string';
 import colors from '../../../utils/variables/colors';
 import generateContractCallOrSendFunction from './generateContractCallOrSendFunction';
 import ContractABI from '../../../components/contracts/contract-abi/index';
@@ -43,7 +44,6 @@ class Contract extends Component {
       showCallResultModal: false,
       callResult: '',
       calledFunction: '',
-      activeTab: 'abi',
       showTransactionPendingModal: false,
       transactionError: '',
       transactionAddress: '',
@@ -59,6 +59,7 @@ class Contract extends Component {
     this.handleCompiledContractCancel = this.handleCompiledContractCancel.bind(this);
     this.handleTransactionModalClose = this.handleTransactionModalClose.bind(this);
   }
+
 
   handleSetContractABI (address, abi) {
     this.props.updateContract(address, {abi});
@@ -85,7 +86,7 @@ class Contract extends Component {
   }
 
   handleTabChange(value) {
-    this.setState({activeTab: value});
+    this.props.history.push(`?tab=${value}`);
   }
 
   handleCompiledContractSelect(address, contract) {
@@ -102,15 +103,16 @@ class Contract extends Component {
 
   render() {
     const { match: { params: {address} }, history, web3, contracts = {}, currentAccount,
-      compilerSources, compiler, fetchCompilerVersions, fetchCompiler} = this.props;
+      compilerSources, compiler, fetchCompilerVersions, fetchCompiler, location} = this.props;
     const currContract = contracts[address];
+    const tab = qs.parse(location.search).tab || 'abi';
     let abi = [];
     if (currContract && currContract.abi){
       abi = JSON.parse(currContract.abi);
     }
     let handleFunctionCall = () => { };
     let handleFunctionSend = () => { };
-    if (currContract && abi.length > 0 && address) {
+    if (currContract && abi.length > 0 && address && web3) {
       handleFunctionCall = generateContractCallOrSendFunction(
         web3,
         abi,
@@ -143,11 +145,11 @@ class Contract extends Component {
         ) : (
           <Tabs
             inkBarStyle={tabStyles.inkbarStyles}
-            value={this.state.activeTab}
+            value={tab}
             onChange={this.handleTabChange}
             tabItemContainertyle={{display: 'none'}}
           >
-            <Tab style={this.state.activeTab === 'abi' ? tabStyles.activeTab : tabStyles.defaultTab}
+            <Tab style={tab === 'abi' ? tabStyles.activeTab : tabStyles.defaultTab}
               label="From Contract ABI" value="abi" icon={<ViewHeadline />}>
               <ContractABI
                 web3={web3}
@@ -155,13 +157,14 @@ class Contract extends Component {
                 contractAddress={address}
               />
             </Tab>
-            <Tab style={this.state.activeTab === 'code' ? tabStyles.activeTab : tabStyles.defaultTab}
+            <Tab style={tab === 'code' ? tabStyles.activeTab : tabStyles.defaultTab}
               label="From Contract Code" value="code" icon={<Code />}>
               <CompilerWrapper
                 compilerSources={compilerSources}
                 compiler={compiler}
                 fetchCompilerVersions={fetchCompilerVersions}
                 fetchCompiler={fetchCompiler}
+                code={currContract && currContract.code}
                 onContractSelect={this.handleCompiledContractSelect.bind(this, address)}
               />
             </Tab>

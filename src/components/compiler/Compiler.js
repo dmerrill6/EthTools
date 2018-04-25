@@ -58,11 +58,11 @@ class Compiler extends React.Component {
       messages.push(`Compiled ${Object.keys(result.contracts).length} contracts.`);
       console.log("Compiled contract: ", result);
       result.errors && result.errors.forEach(error => {
-        messages.push(`Error: ${error}`);
+        messages.push(error);
       });
       Object.values(result.contracts).forEach(contract => {
         contract.errors && contract.errors.forEach(error => {
-          messages.push(`Error: ${error}`);
+          messages.push(error);
         });
       });
       messages.push('View the logs if you want to check the compiled objects.');
@@ -82,7 +82,7 @@ class Compiler extends React.Component {
   }
 
   render () {
-    const {actions = []} = this.props;
+    const {actions = [], code} = this.props;
     return (
       <React.Fragment>
         <Card containerStyle={{ backgroundColor: 'white' }}>
@@ -91,6 +91,7 @@ class Compiler extends React.Component {
           />
           <CardText>
             <SourceCodeForm
+              code={code}
               onSubmit={this.handleContractCompile} />
           </CardText>
 

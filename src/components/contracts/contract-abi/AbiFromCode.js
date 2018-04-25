@@ -21,7 +21,6 @@ class AbiFromCode extends React.Component {
   }
 
   handleContractCompile (contracts) {
-    debugger;
     this.setState({contracts: contracts.contracts})
   }
 

@@ -24,7 +24,7 @@ class CompilerWrapper extends React.Component{
   }
 
   render () {
-    const { compilerSources, compiler, fetchCompilerVersions, fetchCompiler } = this.props;
+    const { compilerSources, compiler, fetchCompilerVersions, fetchCompiler, code } = this.props;
     return (
       <Compiler
         onContractCompile={this.handleContractCompile}
@@ -32,6 +32,7 @@ class CompilerWrapper extends React.Component{
         compiler={compiler}
         fetchCompilerVersions={fetchCompilerVersions}
         fetchCompiler={fetchCompiler}
+        code={code}
         actions={
           Object.keys(this.state.contracts).map((contract, idx) => {
             const contractObj = this.state.contracts[contract];

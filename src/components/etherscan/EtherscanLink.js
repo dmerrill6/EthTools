@@ -45,7 +45,7 @@ class EtherscanLink extends React.Component {
     return (
       <Link
         {...this.props}
-        to={link}
+        to={this.props.to || link}
       >
         {this.props.children}
       </Link>

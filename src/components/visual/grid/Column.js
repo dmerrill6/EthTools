@@ -22,26 +22,41 @@ const StyledColumn = styled.div`
   @media only screen {
     max-width: ${props => calculateWidthPercentage(props.xs)}%;
     flex-basis: ${props => calculateWidthPercentage(props.xs)}%;
+    margin-left: ${props => calculateWidthPercentage(props.xsOffset)}%;
   }
   @media only screen and (min-width: ${SM_MIN}em) {
     max-width: ${props => calculateWidthPercentage(props.sm)}%;
     flex-basis: ${props => calculateWidthPercentage(props.sm)}%;
+    margin-left: ${props => calculateWidthPercentage(props.smOffset)}%;
   }
   @media only screen and (min-width: ${MD_MIN}em) {
     max-width: ${props => calculateWidthPercentage(props.md)}%;
     flex-basis: ${props => calculateWidthPercentage(props.md)}%;
+    margin-left: ${props => calculateWidthPercentage(props.mdOffset)}%;
   }
   @media only screen and (min-width: ${LG_MIN}em) {
     max-width: ${props => calculateWidthPercentage(props.lg)}%;
     flex-basis: ${props => calculateWidthPercentage(props.lg)}%;
+    margin-left: ${props => calculateWidthPercentage(props.lgOffset)}%;
   }
 `
 
 
 const Column = (props) => {
-  let { xs = COL_AMOUNT, sm = xs, md = sm, lg = md, align = 'start', children } = props;
+  let { xs = COL_AMOUNT, sm = xs, md = sm, lg = md, align = 'start', children,
+        xsOffset = 0, smOffset = xsOffset, mdOffset = smOffset, lgOffset = mdOffset } = props;
   return (
-    <StyledColumn xs={xs} sm={sm} md={md} lg={lg} align={align}>
+    <StyledColumn
+      xs={xs}
+      sm={sm}
+      md={md}
+      lg={lg}
+      align={align}
+      xsOffset={xsOffset}
+      smOffset={smOffset}
+      mdOffset={mdOffset}
+      lgOffset={lgOffset}
+    >
       {children}
     </StyledColumn>
   )
