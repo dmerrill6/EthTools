@@ -16,3 +16,8 @@ export const selectedCompilerSelector = createSelector(
   compilersSelector,
   (compilers) => compilers.selectedCompiler
 )
+
+export const selectedEditorThemeSelector = createSelector(
+  compilersSelector,
+  (compilers) => compilers.selectedEditorTheme
+)

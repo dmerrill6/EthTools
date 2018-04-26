@@ -41,9 +41,6 @@ const AppBarContent = (props) => (
     <NavLink to='/deploy' activeStyle={activeStyle}>
       <MenuButton label='Deploy' />
     </NavLink>
-    <NavLink to='/about' activeStyle={activeStyle}>
-      <MenuButton label='About' />
-    </NavLink>
   </div>
 );
 

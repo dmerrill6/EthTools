@@ -24,11 +24,13 @@ class CompilerWrapper extends React.Component{
   }
 
   render () {
-    const { compilerSources, compiler, fetchCompilerVersions, fetchCompiler, code } = this.props;
+    const { compilerSources, compiler, fetchCompilerVersions, fetchCompiler, code, editorTheme, onThemeChange } = this.props;
     return (
       <Compiler
         onContractCompile={this.handleContractCompile}
         compilerSources={compilerSources}
+        onThemeChange={onThemeChange}
+        editorTheme={editorTheme}
         compiler={compiler}
         fetchCompilerVersions={fetchCompilerVersions}
         fetchCompiler={fetchCompiler}
@@ -59,9 +61,11 @@ class CompilerWrapper extends React.Component{
 CompilerWrapper.propTypes = {
   compiler: PropTypes.object,
   compilerSources: PropTypes.array,
+  editorTheme: PropTypes.string,
   fetchCompiler: PropTypes.func,
   fetchCompilerVersions: PropTypes.func,
-  onContractSelect: PropTypes.func
+  onContractSelect: PropTypes.func,
+  onThemeChange: PropTypes.func
 }
 
 export default CompilerWrapper;

@@ -82,7 +82,7 @@ class Compiler extends React.Component {
   }
 
   render () {
-    const {actions = [], code} = this.props;
+    const {actions = [], code, editorTheme = 'dark', onThemeChange = () => {}} = this.props;
     return (
       <React.Fragment>
         <Card containerStyle={{ backgroundColor: 'white' }}>
@@ -92,7 +92,10 @@ class Compiler extends React.Component {
           <CardText>
             <SourceCodeForm
               code={code}
+              theme={editorTheme}
+              onThemeChange={onThemeChange}
               onSubmit={this.handleContractCompile} />
+
           </CardText>
 
         </Card>
@@ -127,6 +130,7 @@ Compiler.propTypes = {
   actions: PropTypes.array,
   compiler: PropTypes.object,
   compilerSources: PropTypes.array,
+  darkTheme: PropTypes.bool,
   fetchCompiler: PropTypes.func,
   fetchCompilerVersions: PropTypes.func,
   onContractCompile: PropTypes.func,

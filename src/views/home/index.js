@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import BugReport from 'material-ui/svg-icons/action/bug-report';
 import MoneyOff from 'material-ui/svg-icons/editor/money-off';
@@ -28,7 +29,7 @@ const ContractSection = styled.div`
   padding: 6em 0;
 `
 
-const Link = styled.a`
+const Anchor = styled.a`
   color: #e0e0ff;
   text-decoration: none;
 `
@@ -46,6 +47,11 @@ const Home = (props) => {
     <React.Fragment>
       <ContractSection>
         <ContractUI {...props} showExamples={false}/>
+        <div style={{textAlign: 'center'}}>
+          <Link to='/contracts'>
+            <RaisedButton primary label='View Examples'/>
+          </Link>
+        </div>
       </ContractSection>
       <ContrastSection>
         <Row>
@@ -55,7 +61,7 @@ const Home = (props) => {
               <H3 bold>
                 Open Source
               </H3>
-              <p>The source code is available at <Link href='https://github.com/dmerrill6/ethtools' target='blank'> GitHub</Link>.</p><p>Collaborators are welcome.</p>
+              <p>The source code is available at <Anchor href='https://github.com/dmerrill6/ethtools' target='blank'> GitHub</Anchor>.</p><p>Collaborators are welcome.</p>
             </FeatureContainer>
           </Column>
           <Column sm={4} align='center'>
@@ -90,9 +96,9 @@ const Home = (props) => {
               <Card style={{background: 'white', margin: '1em' }}>
                 <CardText>
                   <H3 center>Want a new feature?</H3>
-                  <Link target='_blank' href='https://github.com/dmerrill6/EthTools/issues/new?labels=enhancement&title=Feature%20Request%20-%20%20Insert%20name%20here'>
+                  <Anchor target='_blank' href='https://github.com/dmerrill6/EthTools/issues/new?labels=enhancement&title=Feature%20Request%20-%20%20Insert%20name%20here'>
                     <RaisedButton label='Feature Request' secondary icon={<LightbulbOutline />} />
-                  </Link>
+                  </Anchor>
                 </CardText>
               </Card>
             </Column>
@@ -100,9 +106,9 @@ const Home = (props) => {
               <Card style={{background: 'white', margin: '1em' }}>
                 <CardText>
                   <H3 center>Have an issue?</H3>
-                  <Link target='_blank' href='https://github.com/dmerrill6/EthTools/issues/new?labels=bug&title=Issue%20Report%20-%20Insert%20title%20here'>
+                  <Anchor target='_blank' href='https://github.com/dmerrill6/EthTools/issues/new?labels=bug&title=Issue%20Report%20-%20Insert%20title%20here'>
                     <RaisedButton label='Issue Report' secondary icon={<BugReport />} />
-                  </Link>
+                  </Anchor>
                 </CardText>
               </Card>
             </Column>

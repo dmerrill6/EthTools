@@ -1,11 +1,16 @@
 import React from 'react';
-import { Field, reduxForm, FieldArray } from 'redux-form';
-import TextField from 'material-ui/TextField';
+import { Field, reduxForm } from 'redux-form';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import styled from 'styled-components';
-import FlatButton from 'material-ui/FlatButton';
+import AceEditor from 'react-ace';
 import AnimatedLogo from '../visual/AnimatedLogo';
+import 'brace/mode/text';
+import './mode-solidity';
+import 'brace/theme/clouds';
+import 'brace/theme/monokai';
+
 
 const Divider = styled.div`
   height: 10px;
@@ -18,26 +23,31 @@ const ProgressWrapper = styled.div`
   top: 70px;
 `
 
-const renderTextField = ({
-  input,
-  hintText,
-  floatingLabelText,
-  fullWidth,
-  multiLine,
-  rows,
-  meta: { touched, error },
-  ...custom
-}) =>
-  <TextField
-    hintText={hintText}
-    fullWidth={fullWidth}
-    rows={rows}
-    multiLine={multiLine}
-    floatingLabelText={floatingLabelText}
-    errorText={touched && error}
-    {...custom}
-    {...input}
-  />
+const ThemeSelectContainer = styled.div`
+  text-align: right;
+  & *{
+    text-align: left;
+  }
+`
+
+class CodeEditor extends React.Component {
+ render() {
+   const {
+     input,
+     theme,
+     meta: { touched, error },
+     ...custom
+   } = this.props;
+   return (<AceEditor
+     mode="javascript"
+     theme={theme === 'dark' ? 'monokai' : 'clouds'}
+     width='100%'
+     {...custom}
+     {...input}
+     onBlur={e => input.onBlur(undefined)}
+   />)
+ }
+}
 
 const validate = values => {
   const errors = {}
@@ -58,6 +68,12 @@ class SourceCodeForm extends React.Component {
     this.state = {
       lastRegisteredCode: undefined
     }
+    this.handleThemeChange = this.handleThemeChange.bind(this);
+  }
+
+  handleThemeChange (event, index, value) {
+    const {onThemeChange = () => {}} = this.props;
+    onThemeChange(value);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -68,18 +84,24 @@ class SourceCodeForm extends React.Component {
   }
 
   render () {
+    const {theme = 'dark'} = this.props;
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Field
           name='contract_source_code'
-          multiLine
-          rows={10}
-          fullWidth
-          component={renderTextField}
-          hintText='Insert contract source code'
-          floatingLabelText='Contract Source Code'
-          ref={(instance) => {this.field = instance}}
+          component={CodeEditor}
+          theme={theme}
         />
+        <ThemeSelectContainer>
+          <SelectField
+            floatingLabelText="Theme"
+            value={theme}
+            onChange={this.handleThemeChange}
+          >
+            <MenuItem value='dark' primaryText="Dark" />
+            <MenuItem value='light' primaryText="Light" />
+          </SelectField>
+        </ThemeSelectContainer>
         {
           this.props.submitting && (
             <ProgressWrapper>

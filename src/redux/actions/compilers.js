@@ -32,3 +32,12 @@ export const fetchCompiler = (compilerVersion) => dispatch => {
     return compiler;
   });
 }
+
+export const SELECT_EDITOR_THEME = 'SELECT_EDITOR_THEME';
+
+export const selectEditorTheme = (selectedEditorTheme) => {
+  return {
+    type: SELECT_EDITOR_THEME,
+    selectedEditorTheme
+  }
+}

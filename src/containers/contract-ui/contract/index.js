@@ -19,8 +19,8 @@ import Functions from '../../../components/contracts/functions/index';
 import { updateContract } from '../../../redux/actions/contracts';
 import { web3Selector, currentAccountSelector } from '../../../redux/selectors/web3';
 import { contractsSelector } from '../../../redux/selectors/contracts';
-import {selectedCompilerSelector, compilerSourceVersionsSelector} from '../../../redux/selectors/compilers';
-import {fetchCompiler, fetchCompilerVersions} from '../../../redux/actions/compilers';
+import {selectedCompilerSelector, compilerSourceVersionsSelector, selectedEditorThemeSelector} from '../../../redux/selectors/compilers';
+import {fetchCompiler, fetchCompilerVersions, selectEditorTheme} from '../../../redux/actions/compilers';
 
 const Divider = styled.div`
   margin: 1em 0;
@@ -103,7 +103,8 @@ class Contract extends Component {
 
   render() {
     const { match: { params: {address} }, history, web3, contracts = {}, currentAccount,
-      compilerSources, compiler, fetchCompilerVersions, fetchCompiler, location} = this.props;
+      compilerSources, compiler, fetchCompilerVersions, fetchCompiler, location,
+      selectEditorTheme, editorTheme} = this.props;
     const currContract = contracts[address];
     const tab = qs.parse(location.search).tab || 'abi';
     let abi = [];
@@ -165,6 +166,8 @@ class Contract extends Component {
                 fetchCompilerVersions={fetchCompilerVersions}
                 fetchCompiler={fetchCompiler}
                 code={currContract && currContract.code}
+                editorTheme={editorTheme}
+                onThemeChange={selectEditorTheme}
                 onContractSelect={this.handleCompiledContractSelect.bind(this, address)}
               />
             </Tab>
@@ -209,9 +212,11 @@ Contract.propTypes = {
   contracts: PropTypes.object,
   compiler: PropTypes.object,
   compilerSources: PropTypes.array,
+  currentAccount: PropTypes.string,
+  editorTheme: PropTypes.string,
   fetchCompiler: PropTypes.func,
   fetchCompilerVersions: PropTypes.func,
-  currentAccount: PropTypes.string,
+  selectEditorTheme: PropTypes.func,
   updateContract: PropTypes.func,
   web3: PropTypes.object
 }
@@ -222,7 +227,8 @@ const mapStateToProps = (state) => {
     contracts: contractsSelector(state),
     currentAccount: currentAccountSelector(state),
     compilerSources: compilerSourceVersionsSelector(state),
-    compiler: selectedCompilerSelector(state)
+    compiler: selectedCompilerSelector(state),
+    editorTheme: selectedEditorThemeSelector(state)
   };
 }
 
@@ -230,7 +236,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     updateContract: (address, attributes) => dispatch(updateContract(address, attributes)),
     fetchCompilerVersions: () => dispatch(fetchCompilerVersions()),
-    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion))
+    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion)),
+    selectEditorTheme: (editorTheme) => dispatch(selectEditorTheme(editorTheme))
   }
 }
 

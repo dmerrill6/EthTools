@@ -44,9 +44,10 @@ const StyledColumn = styled.div`
 
 const Column = (props) => {
   let { xs = COL_AMOUNT, sm = xs, md = sm, lg = md, align = 'start', children,
-        xsOffset = 0, smOffset = xsOffset, mdOffset = smOffset, lgOffset = mdOffset } = props;
+        xsOffset = 0, smOffset = xsOffset, mdOffset = smOffset, lgOffset = mdOffset, style } = props;
   return (
     <StyledColumn
+      style={style}
       xs={xs}
       sm={sm}
       md={md}

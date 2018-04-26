@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import RaisedButton from 'material-ui/RaisedButton';
 import Compiler from '../../compiler/Compiler';
-import { fetchCompilerVersions, fetchCompiler } from '../../../redux/actions/compilers';
-import { selectedCompilerSelector, compilerSourceVersionsSelector } from '../../../redux/selectors/compilers';
+import { fetchCompilerVersions, fetchCompiler, selectEditorTheme } from '../../../redux/actions/compilers';
+import { selectedCompilerSelector, compilerSourceVersionsSelector, selectedEditorThemeSelector } from '../../../redux/selectors/compilers';
 
 const Divider = styled.div`
   height: 10px;
@@ -25,13 +25,15 @@ class AbiFromCode extends React.Component {
   }
 
   render () {
-    const {compilerSources, compiler, fetchCompilerVersions, fetchCompiler} = this.props;
+    const {compilerSources, compiler, fetchCompilerVersions, fetchCompiler, editorTheme, selectEditorTheme} = this.props;
     return (
       <Compiler
         compilerSources={compilerSources}
         compiler={compiler}
         fetchCompilerVersions={fetchCompilerVersions}
         fetchCompiler={fetchCompiler}
+        editorTheme={editorTheme}
+        onEditorThemeChange={selectEditorTheme}
         onConractCompile={this.handleContractCompile}
         actions={
           Object.keys(this.state.contracts).map((contract, idx) => {
@@ -55,21 +57,25 @@ class AbiFromCode extends React.Component {
 AbiFromCode.propTypes = {
   compiler: PropTypes.object,
   compilerSources: PropTypes.array,
+  editorTheme: PropTypes.string,
   fetchCompiler: PropTypes.func,
-  fetchCompilerVersions: PropTypes.func
+  fetchCompilerVersions: PropTypes.func,
+  selectEditorTheme: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
   return {
     compilerSources: compilerSourceVersionsSelector(state),
-    compiler: selectedCompilerSelector(state)
+    compiler: selectedCompilerSelector(state),
+    editorTheme: selectedEditorThemeSelector(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCompilerVersions: () => dispatch(fetchCompilerVersions()),
-    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion))
+    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion)),
+    selectEditorTheme: (editorTheme) => dispatch(selectEditorTheme(editorTheme))
   };
 };
 

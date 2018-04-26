@@ -7,10 +7,11 @@ import {
   Redirect
 } from 'react-router-dom';
 
-import Home from './views/home/index';
+import Home from './views/home';
 import ContractUI from './containers/contract-ui';
 import Deploy from './containers/deploy';
-import About from './containers/about';
+import About from './views/about';
+import License from './views/license';
 import Layout from './containers/layout';
 
 
@@ -23,7 +24,8 @@ const App = ({ store }) => (
           <Route exact path="/" component={Home}/>
           <Route path="/contracts" component={ContractUI}/>
           <Route path="/deploy" component={Deploy} />
-          <Route path="/about" component={About}/>
+          <Route path="/about" component={About} />
+          <Route path="/license" component={License}/>
         </Layout>
       </Router>
     </Provider>

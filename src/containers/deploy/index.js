@@ -9,8 +9,8 @@ import TransactionPendingDialog from '../../components/transaction-pending-dialo
 import Compiler from '../../components/compiler/Compiler';
 import ConstructorArgumentsForm from '../../components/deploy/ConstructorArgumentsForm';
 import { web3Selector, currentAccountSelector} from '../../redux/selectors/web3';
-import { fetchCompilerVersions, fetchCompiler } from '../../redux/actions/compilers';
-import {selectedCompilerSelector, compilerSourceVersionsSelector} from '../../redux/selectors/compilers';
+import { fetchCompilerVersions, fetchCompiler, selectEditorTheme } from '../../redux/actions/compilers';
+import {selectedCompilerSelector, compilerSourceVersionsSelector, selectedEditorThemeSelector} from '../../redux/selectors/compilers';
 
 const Divider = styled.div`
   height: 10px;
@@ -70,7 +70,8 @@ class Deploy extends React.Component {
   }
 
   render() {
-    const { currentAccount, compilerSources, compiler, fetchCompilerVersions, fetchCompiler } = this.props;
+    const { currentAccount, compilerSources, compiler, fetchCompilerVersions, fetchCompiler,
+            editorTheme, selectEditorTheme} = this.props;
     return (
       <PaddedContainer>
         <Compiler
@@ -79,6 +80,8 @@ class Deploy extends React.Component {
           fetchCompilerVersions={fetchCompilerVersions}
           fetchCompiler={fetchCompiler}
           onContractCompile={this.handleContractCompile}
+          onThemeChange={selectEditorTheme}
+          editorTheme={editorTheme}
           actions={
             Object.keys(this.state.contracts).map((contract, idx) => {
               const contractObj = this.state.contracts[contract];
@@ -129,8 +132,10 @@ Deploy.propTypes = {
   compiler: PropTypes.object,
   compilerSources: PropTypes.array,
   currentAccount: PropTypes.string,
+  editorTheme: PropTypes.string,
   fetchCompiler: PropTypes.func,
   fetchCompilerVersions: PropTypes.func,
+  selectEditorTheme: PropTypes.func,
   web3: PropTypes.object
 };
 
@@ -139,14 +144,16 @@ const mapStateToProps = (state) => {
     web3: web3Selector(state),
     currentAccount: currentAccountSelector(state),
     compilerSources: compilerSourceVersionsSelector(state),
-    compiler: selectedCompilerSelector(state)
+    compiler: selectedCompilerSelector(state),
+    editorTheme: selectedEditorThemeSelector(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCompilerVersions: () => dispatch(fetchCompilerVersions()),
-    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion))
+    fetchCompiler: (compilerVersion) => dispatch(fetchCompiler(compilerVersion)),
+    selectEditorTheme: (editorTheme) => dispatch(selectEditorTheme(editorTheme))
   };
 };
 
