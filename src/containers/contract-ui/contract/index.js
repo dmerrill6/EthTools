@@ -106,7 +106,8 @@ class Contract extends Component {
       compilerSources, compiler, fetchCompilerVersions, fetchCompiler, location,
       selectEditorTheme, editorTheme} = this.props;
     const currContract = contracts[address];
-    const tab = qs.parse(location.search).tab || 'abi';
+    const queryParams = location.search[0] === '?' ? location.search.substring(1) : location.search
+    const tab = qs.parse(queryParams).tab || 'abi';
     let abi = [];
     if (currContract && currContract.abi){
       abi = JSON.parse(currContract.abi);
