@@ -8,7 +8,7 @@ import Chip from 'material-ui/Chip';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import ViewHeadline from 'material-ui/svg-icons/action/view-headline';
 import Code from 'material-ui/svg-icons/action/code';
-import qs from 'query-string';
+import qs from 'qs';
 import colors from '../../../utils/variables/colors';
 import generateContractCallOrSendFunction from './generateContractCallOrSendFunction';
 import ContractABI from '../../../components/contracts/contract-abi/index';
