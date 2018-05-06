@@ -13,7 +13,8 @@ const TransactionPendingDialog = ({
     etherscanLink,
     pendingMessage = 'Waiting for blockchain...',
     pendingTitle = 'Waiting for transaction to be mined',
-    successTitle = 'Transaction mined!'
+    successTitle = 'Transaction mined!',
+    currentNetwork
   }) => (
     <Dialog
       title={transactionAddress ? successTitle : pendingTitle}
@@ -33,6 +34,7 @@ const TransactionPendingDialog = ({
           {!transactionAddress ? pendingMessage : (
             <EtherscanLink
               to={etherscanLink}
+              network={currentNetwork}
               target='_blank'>
               {`Transaction at ${transactionAddress}`}
             </EtherscanLink>
@@ -49,6 +51,7 @@ TransactionPendingDialog.propTypes = {
   transactionAddress: PropTypes.string,
   onClose: PropTypes.func,
   open: PropTypes.bool,
+  currentNetwork: PropTypes.string,
   transactionError: PropTypes.string,
   etherscanLink: PropTypes.string,
   pendingMessage: PropTypes.string,

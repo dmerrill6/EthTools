@@ -11,7 +11,8 @@ const colors = {
   noticeColor: "#1446A0",
   successColor: "#6eff7a",
   whiteColor: "#F7F4F3",
-  blackColor: "#1B2432"
+  blackColor: "#1B2432",
+  primary2ColorGray: "#a6b9dc"
 }
 
 export default colors;

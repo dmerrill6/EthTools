@@ -7,11 +7,12 @@ import Contract from './contract/index';
 import examples from './examples/examples';
 import Example from '../../components/contracts/example/index';
 import {Row} from '../../components/visual/grid';
-import {H1, H2} from '../../components/visual/Titles';
+import {H1, H2, H3} from '../../components/visual/Titles';
 import ContractSearchBox from '../../components/contracts/contract-search-box/index';
 import PaddedContainer from '../../components/visual/PaddedContainer';
 import AnimatedLogo from '../../components/visual/AnimatedLogo';
 import { updateContract } from '../../redux/actions/contracts';
+import {currentNetworkSelector} from '../../redux/selectors/web3';
 
 class ContractUI extends React.Component {
   constructor (props) {
@@ -35,8 +36,9 @@ class ContractUI extends React.Component {
   }
 
   render () {
-    const { match: { params, url }, location, showExamples = true } = this.props;
+    const { match: { params, url }, location, showExamples = true, currentNetwork } = this.props;
     const contractNotSelected = location.pathname === url;
+    const currExamples = examples.filter(example => example.net.toLowerCase() === currentNetwork);
     return (
       <PaddedContainer>
         {
@@ -68,7 +70,7 @@ class ContractUI extends React.Component {
               <H2 center>Check one of the following examples</H2>
               <Row>
                 {
-                  examples.map((example, idx) => (
+                  currExamples.map((example, idx) => (
                     <Example key={`contract_example_${idx}`} name={example.name} abiOrCode={example.abiOrCode}
                       net={example.net} address={example.address} abi={example.abi} code={example.code}
                       onClick={this.handleContractExampleSubmit.bind(this, example.address, example.abiOrCode, example.abi || example.code)}
@@ -76,6 +78,9 @@ class ContractUI extends React.Component {
                     />
                   ))
                 }
+                {currExamples.length === 0 && (
+                  <H3 center>No examples found for this network. Please try choosing another network or check your MetaMask connection.</H3>
+                )}
               </Row>
             </React.Fragment>
           )
@@ -88,7 +93,7 @@ class ContractUI extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-
+    currentNetwork: currentNetworkSelector(state)
   }
 }
 const mapDispatchToProps = (dispatch) => {

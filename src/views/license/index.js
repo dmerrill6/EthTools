@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Helmet } from 'react-helmet';
 import {Row, Column} from '../../components/visual/grid/index';
 
 const currYear = new Date().getFullYear();
@@ -9,6 +10,9 @@ const P = styled.p`
 
 const License = (props) => (
   <Row style={{ paddingTop: '3em', paddingBottom: '3em' }}>
+    <Helmet>
+      <title>EthTools - Terms of Use</title>
+    </Helmet>
     <Column xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={3} >
       <h1>
         General Warning

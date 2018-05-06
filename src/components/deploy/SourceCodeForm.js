@@ -122,5 +122,6 @@ class SourceCodeForm extends React.Component {
 
 export default reduxForm({
   form: 'SourceCodeForm',
-  validate
+  validate,
+  destroyOnUnmount: false
 })(SourceCodeForm);

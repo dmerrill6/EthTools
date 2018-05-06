@@ -19,4 +19,5 @@ export const H3 = styled.h3`
   line-height: 26px;
   text-align: ${props => props.center ? 'center' : 'inherit'};
   font-weight: ${props => props.bold ? 'bold' : 'normal'};
+  width: 100%;
 `

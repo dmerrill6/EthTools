@@ -1,4 +1,5 @@
 import { ADD_ENTITY, ADD_ENTITIES, REMOVE_ENTITY, UPDATE_ENTITY } from '../actions/entities';
+import { mergeDeep } from '../../utils/general/objects';
 import schemas from '../schemas/index';
 import { normalize } from 'normalizr';
 
@@ -26,7 +27,7 @@ const entities = (state = {}, action) => {
     case UPDATE_ENTITY:
       let updatedEntity = {[currSchema._idAttribute]: entityId, ...attributes};
       if (state[currSchema._key] && state[currSchema._key][entityId]){
-        updatedEntity = {...state[currSchema._key][entityId], ...attributes};
+        updatedEntity = mergeDeep(state[currSchema._key][entityId], attributes);
       }
       return {
         ...state,

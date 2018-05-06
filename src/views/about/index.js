@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import QRCode from 'qrcode.react';
+import { Helmet } from 'react-helmet';
 import { Row, Column } from '../../components/visual/grid/index';
 
 const P = styled.p`
@@ -10,6 +11,9 @@ const P = styled.p`
 const About = () => {
   return (
     <Row style={{ paddingTop: '3em', paddingBottom: '3em' }}>
+      <Helmet>
+        <title>EthTools - About this site</title>
+      </Helmet>
       <Column xs={10} xsOffset={1} sm={8} smOffset={2} md={6} mdOffset={3} >
         <h2>
           About EthTools

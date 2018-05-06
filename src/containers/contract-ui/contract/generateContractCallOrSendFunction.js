@@ -17,6 +17,7 @@ const etherToWei = (ether) => {
 const generateContractCallOrSendFunction = (web3, abi, address, type, fromAddress, onCallResolve, onCallReject, onCallStart = () => {}) => {
   const contract = new web3.eth.Contract(abi, address);
   return (funcName, params, amountOfEtherToSend) => {
+
     if (['send', 'call'].includes(type) === false) return;
     let promise;
     try {
@@ -24,7 +25,7 @@ const generateContractCallOrSendFunction = (web3, abi, address, type, fromAddres
       const paramValuesArray = params.map(params => params.value);
 
       // Log to console so that end user can view what method is going to be called.
-      console.log(`Calling:\ncontract.methods['${funcName}(${paramTypesAsString})'](${paramValuesArray.map(param => web3ParamToPrintableString(param)).join(',')}).${type}({from: ${fromAddress}, value: ${etherToWei(amountOfEtherToSend)})`);
+      console.log(`Calling:\ncontract.methods['${funcName}(${paramTypesAsString})'](${paramValuesArray.map(param => web3ParamToPrintableString(param)).join(',')}).${type}({from: ${fromAddress}, value: ${etherToWei(amountOfEtherToSend)}})`);
       onCallStart({functionName: funcName});
       promise = contract.methods[`${funcName}(${paramTypesAsString})`].apply(this, paramValuesArray)[type]({
         from: fromAddress,

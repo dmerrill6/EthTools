@@ -48,7 +48,8 @@ const renderField = ({
 
   render () {
     const { name = '', inputs, outputs, onFunctionCall, submitting, handleSubmit, error,
-            isConstant, initiallyOpen, isFunction, showAmountToSend = false } = this.props;
+            isConstant, initiallyOpen, isFunction, showAmountToSend = false, result,
+            isLoadingResult = false } = this.props;
 
     const inputsAsArr = Object.values(this.state.inputValues);
     const inputValuesAsString = functionParamsAsString(inputsAsArr.map(input => {
@@ -58,7 +59,7 @@ const renderField = ({
     return (
       <form onSubmit={handleSubmit(onFunctionCall)}>
         <ListItem
-          primaryText={<FunctionSignature name={name} inputs={inputs} outputs={outputs} isFunction={isFunction} />}
+          primaryText={<FunctionSignature name={name} inputs={inputs} outputs={outputs} isFunction={isFunction} result={result} isLoadingResult={isLoadingResult} />}
           primaryTogglesNestedList
           leftAvatar={<Avatar>{name[0]}</Avatar>}
           initiallyOpen={initiallyOpen}
@@ -110,7 +111,9 @@ FunctionForm.propTypes = {
   isFunction: PropTypes.bool,
   name: PropTypes.string,
   onFunctionCall: PropTypes.func,
-  outputs: PropTypes.array
+  outputs: PropTypes.array,
+  result: PropTypes.string,
+  isLoadingResult: PropTypes.bool
 }
 
 FunctionForm.defaultPropTypes = {

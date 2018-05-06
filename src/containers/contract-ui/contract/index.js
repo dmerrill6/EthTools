@@ -17,7 +17,7 @@ import CompilerWrapper from '../../../components/contracts/compiler-wrapper/inde
 import SelectedContractBreadcrumb from '../../../components/contracts/contract-search-box/SelectedContractBreadcrumb';
 import Functions from '../../../components/contracts/functions/index';
 import { updateContract } from '../../../redux/actions/contracts';
-import { web3Selector, currentAccountSelector } from '../../../redux/selectors/web3';
+import { web3Selector, currentAccountSelector, currentNetworkSelector} from '../../../redux/selectors/web3';
 import { contractsSelector } from '../../../redux/selectors/contracts';
 import {selectedCompilerSelector, compilerSourceVersionsSelector, selectedEditorThemeSelector} from '../../../redux/selectors/compilers';
 import {fetchCompiler, fetchCompilerVersions, selectEditorTheme} from '../../../redux/actions/compilers';
@@ -98,13 +98,14 @@ class Contract extends Component {
   }
 
   handleTransactionModalClose() {
-    this.setState({showTransactionPendingModal: false});
+    this.setState({
+      showTransactionPendingModal: false, transactionAddress: '', transactionFunction: '', transactionError: ''});
   }
 
   render() {
     const { match: { params: {address} }, history, web3, contracts = {}, currentAccount,
       compilerSources, compiler, fetchCompilerVersions, fetchCompiler, location,
-      selectEditorTheme, editorTheme} = this.props;
+      selectEditorTheme, editorTheme, currentNetwork} = this.props;
     const currContract = contracts[address];
     const queryParams = location.search[0] === '?' ? location.search.substring(1) : location.search
     const tab = qs.parse(queryParams).tab || 'abi';
@@ -114,6 +115,7 @@ class Contract extends Component {
     }
     let handleFunctionCall = () => { };
     let handleFunctionSend = () => { };
+    let handleConstantLoad = () => { };
     if (currContract && abi.length > 0 && address && web3) {
       handleFunctionCall = generateContractCallOrSendFunction(
         web3,
@@ -133,6 +135,16 @@ class Contract extends Component {
         this.handleContractSendResult,
         this.handleContractSendResultError,
         ({functionName}) => {this.setState({showTransactionPendingModal: true, transactionFunction: functionName})}
+      );
+      handleConstantLoad = generateContractCallOrSendFunction(
+        web3,
+        abi,
+        address,
+        'call',
+        currentAccount,
+        ({ functionName, result }) => { this.props.updateContract(address, { constants: { ...currContract.constants, [functionName]: result }, constantLoadStatus: { ...currContract.constantLoadStatus, [functionName]: false } }) },
+        ({ functionName, err }) => { this.props.updateContract(address, { constants: { ...currContract.constants, [functionName]: err }, constantLoadStatus: { ...currContract.constantLoadStatus, [functionName]: false } }) },
+        ({ functionName }) => { this.props.updateContract(address, {constantLoadStatus: {...currContract.constantLoadStatus, [functionName]: true}})}
       );
     }
     return (
@@ -179,7 +191,10 @@ class Contract extends Component {
         <Functions
           abi={abi}
           onFunctionCall={handleFunctionCall}
-          onFunctionSend={handleFunctionSend}/>
+          onFunctionSend={handleFunctionSend}
+          constantMap={currContract && currContract.constants}
+          constantLoadStatus={currContract && currContract.constantLoadStatus}
+          onConstantLoad={handleConstantLoad}/>
         <Dialog
           title={`Contract call result for ${this.state.calledFunction}`}
           actions={[
@@ -202,6 +217,7 @@ class Contract extends Component {
           pendingTitle='Waiting for transaction to be approved and mined'
           pendingMessage={`Transaction sent for function ${this.state.transactionFunction}`}
           successMessage='Transaction mined!'
+          currentNetwork={currentNetwork}
           etherscanLink={`/tx/${this.state.transactionAddress}`}
           transactionError={this.state.transactionError} />
       </React.Fragment>
@@ -214,6 +230,7 @@ Contract.propTypes = {
   compiler: PropTypes.object,
   compilerSources: PropTypes.array,
   currentAccount: PropTypes.string,
+  currentNetwork: PropTypes.string,
   editorTheme: PropTypes.string,
   fetchCompiler: PropTypes.func,
   fetchCompilerVersions: PropTypes.func,
@@ -229,7 +246,8 @@ const mapStateToProps = (state) => {
     currentAccount: currentAccountSelector(state),
     compilerSources: compilerSourceVersionsSelector(state),
     compiler: selectedCompilerSelector(state),
-    editorTheme: selectedEditorThemeSelector(state)
+    editorTheme: selectedEditorThemeSelector(state),
+    currentNetwork: currentNetworkSelector(state)
   };
 }
 

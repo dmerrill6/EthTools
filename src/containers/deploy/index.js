@@ -8,7 +8,7 @@ import PaddedContainer from '../../components/visual/PaddedContainer';
 import TransactionPendingDialog from '../../components/transaction-pending-dialog/index';
 import Compiler from '../../components/compiler/Compiler';
 import ConstructorArgumentsForm from '../../components/deploy/ConstructorArgumentsForm';
-import { web3Selector, currentAccountSelector} from '../../redux/selectors/web3';
+import { web3Selector, currentAccountSelector, currentNetworkSelector} from '../../redux/selectors/web3';
 import { fetchCompilerVersions, fetchCompiler, selectEditorTheme } from '../../redux/actions/compilers';
 import {selectedCompilerSelector, compilerSourceVersionsSelector, selectedEditorThemeSelector} from '../../redux/selectors/compilers';
 
@@ -71,7 +71,7 @@ class Deploy extends React.Component {
 
   render() {
     const { currentAccount, compilerSources, compiler, fetchCompilerVersions, fetchCompiler,
-            editorTheme, selectEditorTheme} = this.props;
+            editorTheme, selectEditorTheme, currentNetwork} = this.props;
     return (
       <PaddedContainer>
         <Compiler
@@ -122,6 +122,7 @@ class Deploy extends React.Component {
           onClose={this.handleDeployModalClose}
           transactionError={this.state.deployError}
           pendingMessage='Waiting for the Blockchain'
+          currentNetwork={currentNetwork}
           successTItle='Deploy Transaction mined!' />
       </PaddedContainer>
     );
@@ -132,6 +133,7 @@ Deploy.propTypes = {
   compiler: PropTypes.object,
   compilerSources: PropTypes.array,
   currentAccount: PropTypes.string,
+  currentNetwork: PropTypes.string,
   editorTheme: PropTypes.string,
   fetchCompiler: PropTypes.func,
   fetchCompilerVersions: PropTypes.func,
@@ -143,6 +145,7 @@ const mapStateToProps = (state) => {
   return {
     web3: web3Selector(state),
     currentAccount: currentAccountSelector(state),
+    currentNetwork: currentNetworkSelector(state),
     compilerSources: compilerSourceVersionsSelector(state),
     compiler: selectedCompilerSelector(state),
     editorTheme: selectedEditorThemeSelector(state)

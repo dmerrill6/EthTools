@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import RaisedButton from 'material-ui/RaisedButton';
 import BugReport from 'material-ui/svg-icons/action/bug-report';
 import MoneyOff from 'material-ui/svg-icons/editor/money-off';
@@ -45,6 +46,9 @@ const FeatureLogo = styled.img`
 const Home = (props) => {
   return (
     <React.Fragment>
+      <Helmet>
+        <title>EthTools - Explore Smart Contracts, Deploy & More</title>
+      </Helmet>
       <ContractSection>
         <ContractUI {...props} showExamples={false}/>
         <div style={{textAlign: 'center'}}>
